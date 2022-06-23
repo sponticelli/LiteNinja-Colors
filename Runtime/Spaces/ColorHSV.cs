@@ -100,8 +100,7 @@ namespace com.liteninja.colors.spaces
 
         #region operators
 
-        public static explicit operator Vector3(ColorHSV color) => new(color.H, color.S, color.V);
-        public static explicit operator Vector4(ColorHSV color) => new(color.H, color.S, color.V, color.Alpha);
+        
 
         public static ColorHSV operator +(ColorHSV a, ColorHSV b) =>
             new(a.H + b.H, a.S + b.S, a.V + b.V, a.Alpha + b.Alpha);
@@ -135,6 +134,23 @@ namespace com.liteninja.colors.spaces
 
         #endregion
 
+        #region Conversions
+        public static explicit operator Vector3(ColorHSV color) => new(color.H, color.S, color.V);
+        public static explicit operator Vector4(ColorHSV color) => new(color.H, color.S, color.V, color.Alpha);
+
+        public static implicit operator Color(ColorHSV color)
+        {
+            var result = Color.HSVToRGB(color.H, color.S, color.V);
+            result.a = color.Alpha;
+            return result;
+        }
+
+        public static implicit operator ColorHSV(Color color)
+        {
+            Color.RGBToHSV(color, out var h, out var s, out var v);
+            return new ColorHSV(h, s, v, color.a);
+        }
+        #endregion
         
 
 
@@ -142,5 +158,7 @@ namespace com.liteninja.colors.spaces
         {
             return $"HSV: {H:F3}, {S:F3}, {V:F3}, {Alpha:F3}";
         }
+
+        
     }
 }
