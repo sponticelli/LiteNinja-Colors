@@ -1,0 +1,16 @@
+{
+    "name": "com.liteninja.colors.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5141ee2eaf1b24afa8e5c1528194b506"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

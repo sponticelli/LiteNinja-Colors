@@ -12,7 +12,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithOffsetH(this ColorHSV self, float angle)
         {
-            return self.WithH(Mathf.Repeat(self.H + angle / 360, 1));
+            return self.WithH(Mathf.Repeat(self.Hue + angle / 360, 1));
         }
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithH(this ColorHSV self, float h)
         {
-            return new ColorHSV(h, self.S, self.V, self.Alpha);
+            return new ColorHSV(h, self.Saturation, self.Value, self.Alpha);
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithS(this ColorHSV self, float s)
         {
-            return new ColorHSV(self.H, s, self.V, self.Alpha);
+            return new ColorHSV(self.Hue, s, self.Value, self.Alpha);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithV(this ColorHSV self, float v)
         {
-            return new ColorHSV(self.H, self.S, v, self.Alpha);
+            return new ColorHSV(self.Hue, self.Saturation, v, self.Alpha);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithSV(this ColorHSV self, float s, float v)
         {
-            return new ColorHSV(self.H, s, v, self.Alpha);
+            return new ColorHSV(self.Hue, s, v, self.Alpha);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithA(this ColorHSV self, float a)
         {
-            return new ColorHSV(self.H, self.S, self.V, a);
+            return new ColorHSV(self.Hue, self.Saturation, self.Value, a);
         }
 
         /// <summary>
@@ -64,9 +64,9 @@ namespace com.liteninja.colors.extensions
         /// <returns>a new HSV color</returns>
         public static ColorHSV Lerp(this ColorHSV self, ColorHSV other, float t)
         {
-            return new ColorHSV(Mathf.Lerp(self.H, other.H, t),
-                Mathf.Lerp(self.S, other.S, t),
-                Mathf.Lerp(self.V, other.V, t), Mathf.Lerp(self.Alpha, other.Alpha, t));
+            return new ColorHSV(Mathf.Lerp(self.Hue, other.Hue, t),
+                Mathf.Lerp(self.Saturation, other.Saturation, t),
+                Mathf.Lerp(self.Value, other.Value, t), Mathf.Lerp(self.Alpha, other.Alpha, t));
         }
         
         /// <summary>
@@ -78,9 +78,9 @@ namespace com.liteninja.colors.extensions
         /// <returns></returns>
         public static ColorHSV LerpUnclamped(this ColorHSV self, ColorHSV other, float t)
         {
-            return new ColorHSV(Mathf.LerpUnclamped(self.H, other.H, t),
-                Mathf.LerpUnclamped(self.S, other.S, t),
-                Mathf.LerpUnclamped(self.V, other.V, t), Mathf.LerpUnclamped(self.Alpha, other.Alpha, t));
+            return new ColorHSV(Mathf.LerpUnclamped(self.Hue, other.Hue, t),
+                Mathf.LerpUnclamped(self.Saturation, other.Saturation, t),
+                Mathf.LerpUnclamped(self.Value, other.Value, t), Mathf.LerpUnclamped(self.Alpha, other.Alpha, t));
         }
 
         #endregion

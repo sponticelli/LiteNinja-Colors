@@ -11,16 +11,16 @@ namespace com.liteninja.colors.spaces
     /// </summary>
     public struct ColorHSV
     {
-        private float _h;
-        private float _s;
-        private float _v;
-        private float _alpha;
+        [SerializeField] [Range(0f, 1f)] private float _hue;
+        [SerializeField] [Range(0f, 1f)] private float _saturation;
+        [SerializeField] [Range(0f, 1f)] private float _value;
+        [SerializeField] [Range(0f, 1f)] private float _alpha;
 
         #region Accessors
 
-        public float H
+        public float Hue
         {
-            get => _h;
+            get => _hue;
             set
             {
                 value %= 1f;
@@ -29,20 +29,20 @@ namespace com.liteninja.colors.spaces
                     value += 1f;
                 }
 
-                _h = value;
+                _hue = value;
             }
         }
 
-        public float S
+        public float Saturation
         {
-            get => _s;
-            set => _s = Mathf.Clamp01(value);
+            get => _saturation;
+            set => _saturation = Mathf.Clamp01(value);
         }
 
-        public float V
+        public float Value
         {
-            get => _v;
-            set => _v = Mathf.Clamp01(value);
+            get => _value;
+            set => _value = Mathf.Clamp01(value);
         }
 
         public float Alpha
@@ -55,9 +55,9 @@ namespace com.liteninja.colors.spaces
         {
             get => index switch
             {
-                0 => _h,
-                1 => _s,
-                2 => _v,
+                0 => _hue,
+                1 => _saturation,
+                2 => _value,
                 3 => _alpha,
                 _ => throw new IndexOutOfRangeException()
             };
@@ -66,13 +66,13 @@ namespace com.liteninja.colors.spaces
                 switch (index)
                 {
                     case 0:
-                        H = value;
+                        Hue = value;
                         break;
                     case 1:
-                        S = value;
+                        Saturation = value;
                         break;
                     case 2:
-                        V = value;
+                        Value = value;
                         break;
                     case 3:
                         Alpha = value;
@@ -85,38 +85,41 @@ namespace com.liteninja.colors.spaces
 
         #endregion
 
-        public ColorHSV(float h = 0f, float s = 0f, float v = 0f, float alpha = 1f) : this()
+        public ColorHSV(float hue = 0f, float saturation = 0f, float value = 0f, float alpha = 1f) : this()
         {
-            H = h;
-            S = s;
-            V = v;
+            Hue = hue;
+            Saturation = saturation;
+            Value = value;
             Alpha = alpha;
         }
 
         /// <summary>
         /// Returns the opposite color on the color wheel
         /// </summary>
-        public ColorHSV complementary => new(H + 0.5f, S, V, Alpha);
+        public ColorHSV complementary => new(Hue + 0.5f, Saturation, Value, Alpha);
 
         #region operators
 
-        
-
         public static ColorHSV operator +(ColorHSV a, ColorHSV b) =>
-            new(a.H + b.H, a.S + b.S, a.V + b.V, a.Alpha + b.Alpha);
+            new(a.Hue + b.Hue, a.Saturation + b.Saturation, a.Value + b.Value, a.Alpha + b.Alpha);
 
         public static ColorHSV operator -(ColorHSV a, ColorHSV b) =>
-            new(a.H - b.H, a.S - b.S, a.V - b.V, a.Alpha - b.Alpha);
+            new(a.Hue - b.Hue, a.Saturation - b.Saturation, a.Value - b.Value, a.Alpha - b.Alpha);
 
         public static ColorHSV operator *(ColorHSV a, ColorHSV b) =>
-            new(a.H * b.H, a.S * b.S, a.V * b.V, a.Alpha * b.Alpha);
+            new(a.Hue * b.Hue, a.Saturation * b.Saturation, a.Value * b.Value, a.Alpha * b.Alpha);
 
-        public static ColorHSV operator *(ColorHSV a, float b) => new(a.H * b, a.S * b, a.V * b, a.Alpha * b);
-        public static ColorHSV operator *(float a, ColorHSV b) => new(a * b.H, a * b.S, a * b.V, a * b.Alpha);
-        public static ColorHSV operator /(ColorHSV a, float b) => new(a.H / b, a.S / b, a.V / b, a.Alpha / b);
+        public static ColorHSV operator *(ColorHSV a, float b) =>
+            new(a.Hue * b, a.Saturation * b, a.Value * b, a.Alpha * b);
+
+        public static ColorHSV operator *(float a, ColorHSV b) =>
+            new(a * b.Hue, a * b.Saturation, a * b.Value, a * b.Alpha);
+
+        public static ColorHSV operator /(ColorHSV a, float b) =>
+            new(a.Hue / b, a.Saturation / b, a.Value / b, a.Alpha / b);
 
         public static bool operator ==(ColorHSV a, ColorHSV b) =>
-            a.H == b.H && a.S == b.S && a.V == b.V && a.Alpha == b.Alpha;
+            a.Hue == b.Hue && a.Saturation == b.Saturation && a.Value == b.Value && a.Alpha == b.Alpha;
 
         public static bool operator !=(ColorHSV a, ColorHSV b) => !(a == b);
 
@@ -130,17 +133,21 @@ namespace com.liteninja.colors.spaces
             return false;
         }
 
-        public override int GetHashCode() => H.GetHashCode() ^ S.GetHashCode() ^ V.GetHashCode() ^ Alpha.GetHashCode();
+        public override int GetHashCode() =>
+            Hue.GetHashCode() ^ Saturation.GetHashCode() ^ Value.GetHashCode() ^ Alpha.GetHashCode();
 
         #endregion
 
         #region Conversions
-        public static explicit operator Vector3(ColorHSV color) => new(color.H, color.S, color.V);
-        public static explicit operator Vector4(ColorHSV color) => new(color.H, color.S, color.V, color.Alpha);
+
+        public static explicit operator Vector3(ColorHSV color) => new(color.Hue, color.Saturation, color.Value);
+
+        public static explicit operator Vector4(ColorHSV color) =>
+            new(color.Hue, color.Saturation, color.Value, color.Alpha);
 
         public static implicit operator Color(ColorHSV color)
         {
-            var result = Color.HSVToRGB(color.H, color.S, color.V);
+            var result = Color.HSVToRGB(color.Hue, color.Saturation, color.Value);
             result.a = color.Alpha;
             return result;
         }
@@ -150,15 +157,13 @@ namespace com.liteninja.colors.spaces
             Color.RGBToHSV(color, out var h, out var s, out var v);
             return new ColorHSV(h, s, v, color.a);
         }
+
         #endregion
-        
 
 
         public override string ToString()
         {
-            return $"HSV: {H:F3}, {S:F3}, {V:F3}, {Alpha:F3}";
+            return $"HSV: {Hue:F3}, {Saturation:F3}, {Value:F3}, {Alpha:F3}";
         }
-
-        
     }
 }

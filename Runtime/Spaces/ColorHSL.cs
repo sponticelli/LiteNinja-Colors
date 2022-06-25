@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace com.liteninja.colors.spaces
@@ -7,33 +8,34 @@ namespace com.liteninja.colors.spaces
     /// H = hue, S = saturation, L = lightness, A = alpha
     /// @ref https://en.wikipedia.org/wiki/HSL_and_HSV
     /// </summary>
+    [Serializable]
     public struct ColorHSL
     {
-        private float _h;
-        private float _s;
-        private float _l;
-        private float _alpha;
+        [SerializeField] [Range(0f, 1f)] private float _hue;
+        [SerializeField] [Range(0f, 1f)] private float _saturation;
+        [SerializeField] [Range(0f, 1f)] private float _lightness;
+        [SerializeField] [Range(0f, 1f)] private float _alpha;
 
-        public float H
+        public float Hue
         {
-            get => _h;
+            get => _hue;
             set
             {
-                _h = value - Mathf.FloorToInt(value);
-                if (_h < 0) _h = 1 - _h;
+                _hue = value - Mathf.FloorToInt(value);
+                if (_hue < 0) _hue = 1 - _hue;
             }
         }
 
-        public float S
+        public float Saturation
         {
-            get => _s;
-            set => _s = Mathf.Clamp01(value);
+            get => _saturation;
+            set => _saturation = Mathf.Clamp01(value);
         }
 
-        public float L
+        public float Lightness
         {
-            get => _l;
-            set => _l = Mathf.Clamp01(value);
+            get => _lightness;
+            set => _lightness = Mathf.Clamp01(value);
         }
 
         public float Alpha
@@ -42,22 +44,22 @@ namespace com.liteninja.colors.spaces
             set => _alpha = value;
         }
 
-        public ColorHSL(float h, float s, float l, float alpha = 1f) : this()
+        public ColorHSL(float hue, float saturation, float lightness, float alpha = 1f) : this()
         {
-            _h = 0;
-            _s = 0;
-            _l = 0;
+            _hue = 0;
+            _saturation = 0;
+            _lightness = 0;
             _alpha = 0;
-            H = h;
-            S = s;
-            L = l;
+            Hue = hue;
+            Saturation = saturation;
+            Lightness = lightness;
             Alpha = alpha;
         }
 
         #region Color Conversion
 
-        public static explicit operator Vector3(ColorHSL color) => new(color.H, color.S, color.L);
-        public static explicit operator Vector4(ColorHSL color) => new(color.H, color.S, color.L, color.Alpha);
+        public static explicit operator Vector3(ColorHSL color) => new(color.Hue, color.Saturation, color.Lightness);
+        public static explicit operator Vector4(ColorHSL color) => new(color.Hue, color.Saturation, color.Lightness, color.Alpha);
 
         public static implicit operator ColorHSL(Color color)
         {
@@ -104,8 +106,23 @@ namespace com.liteninja.colors.spaces
             return new ColorHSL(hue, delta / max, max, color.a);
         }
 
-        
+        public static implicit operator Color(ColorHSL color)
+        {
+            var r = color.Lightness;
+            var g = color.Lightness;
+            var b = color.Lightness;
+
+            if (color.Saturation <= 0) return new Color(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), color.Alpha);
+
+            //TODO: continue here
+            throw new NotImplementedException();
+        }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"HSL: {Hue:F3}, {Saturation:F3}, {Lightness:F3}, {Alpha:F3}";
+        }
     }
 }
