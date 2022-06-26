@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace com.liteninja.colors.spaces
+namespace LiteNinja.Colors.Spaces
 {
     /// <summary>
     /// A struct that represents a color in the HSV color space.
@@ -30,6 +30,26 @@ namespace com.liteninja.colors.spaces
                 }
 
                 _hue = value;
+            }
+        }
+        
+        public float HueDegrees
+        {
+            get => _hue * 360f;
+            set
+            {
+                const float inverseDegrees = 1f / 360f;
+                Hue = value * inverseDegrees;
+            }
+        }
+        
+        public float HueRadians
+        {
+            get => _hue * 2f * Mathf.PI;
+            set
+            {
+                const float inverseRadians = 1f / (2f * Mathf.PI);
+                Hue = value * inverseRadians;
             }
         }
 

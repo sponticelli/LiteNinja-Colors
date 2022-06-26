@@ -1,7 +1,10 @@
 # LiteNinja-Colors
 A Color Library for Unity3D
 
-## Installation 
+## Dependencies
 
-Requires LiteNinja-Utils
+Requires the following packages:
+- [LiteNinja-Utils](https://github.com/sponticelli/LiteNinja-Utils.git)
+
+
 

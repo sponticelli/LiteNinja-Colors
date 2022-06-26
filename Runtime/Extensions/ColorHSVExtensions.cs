@@ -1,10 +1,82 @@
-using com.liteninja.colors.spaces;
+using LiteNinja.Colors.Spaces;
+using LiteNinja.Utils.Extensions;
 using UnityEngine;
 
-namespace com.liteninja.colors.extensions
+namespace LiteNinja.Colors.extensions
 {
     public static class ColorHSVExtensions
     {
+        
+        public static ColorHSV Complementary(this ColorHSV self)
+        {
+            return self.Analogous(0.5f);
+        }
+        
+        public static ColorHSV Analogous(this ColorHSV self, float offset = 0.03f)
+        {
+            var newH = (self.Hue + offset) % 1f;
+            return new ColorHSV(newH, self.Saturation, self.Value, self.Alpha);
+        }
+        
+        public static ColorHSV Triadic(this ColorHSV self)
+        {
+            return self.Analogous(0.33f);
+        }
+        
+        public static ColorHSV Tetradic(this ColorHSV self)
+        {
+            return self.Analogous(0.25f);
+        }
+        
+        public static ColorHSV Invert(this ColorHSV self)
+        {
+            return ((Color)self).Invert();
+        }
+        
+        public static ColorHSV Balance(this ColorHSV self, float cyanRed, float magentaGreen, float yellowBlue)
+        {
+            return ((Color)self).Balance(cyanRed, magentaGreen, yellowBlue);
+        }
+        
+        #region Create a new HSV color changing some parameters
+        public static ColorHSV AddBrightness(this ColorHSV self, float amount)
+        {
+            return ((Color)self).AddBrightness(amount);
+        }
+        
+        public static ColorHSV AddContrast(this ColorHSV self, float amount)
+        {
+            return ((Color)self).AddContrast(amount);
+        }
+        
+        public static ColorHSV AddHue(this ColorHSV self, float amount)
+        {
+            return self.WithH(self.Hue + amount);
+        }
+        
+        public static ColorHSV AddSaturation(this ColorHSV self, float amount)
+        {
+            return self.WithS(self.Saturation + amount);
+        }
+        
+        public static ColorHSV AddValue(this ColorHSV self, float amount)
+        {
+            return self.WithV(self.Value + amount);
+        }
+        
+        public static ColorHSV AddAlpha(this ColorHSV self, float amount)
+        {
+            return self.WithA(self.Alpha + amount);
+        }
+        
+        public static ColorHSV AddLightness(this ColorHSV self, float amount)
+        {
+            return ((Color)self).AddLightness(amount);
+        }
+        
+        
+        #endregion
+        
         #region Create a new HSV starting from an existing HSV, changing one or more of the HSV values
 
         /// <summary>
@@ -12,7 +84,7 @@ namespace com.liteninja.colors.extensions
         /// </summary>
         public static ColorHSV WithOffsetH(this ColorHSV self, float angle)
         {
-            return self.WithH(Mathf.Repeat(self.Hue + angle / 360, 1));
+            return self.WithH(Mathf.Repeat(self.HueDegrees + angle, 1));
         }
 
         /// <summary>
@@ -54,7 +126,9 @@ namespace com.liteninja.colors.extensions
         {
             return new ColorHSV(self.Hue, self.Saturation, self.Value, a);
         }
+        #endregion
 
+        #region Lerp between two colors
         /// <summary>
         /// Lerp between two colors, using the hue, saturation,value  and alpha components
         /// </summary>
@@ -84,6 +158,24 @@ namespace com.liteninja.colors.extensions
         }
 
         #endregion
+
+        #region Comparing colors
+        public static bool Approximately(this ColorHSV self, ColorHSV other)
+        {
+            return Mathf.Approximately(self.Hue, other.Hue) &&
+                   Mathf.Approximately(self.Saturation, other.Saturation) &&
+                   Mathf.Approximately(self.Value, other.Value) &&
+                   Mathf.Approximately(self.Alpha, other.Alpha);
+        }
         
+        public static bool Approximately(this ColorHSV self, ColorHSV other, float epsilon)
+        {
+            return self.Hue.Approximately(other.Hue, epsilon) &&
+                   Mathf.Approximately(self.Saturation, other.Saturation) &&
+                   Mathf.Approximately(self.Value, other.Value) &&
+                   Mathf.Approximately(self.Alpha, other.Alpha);
+        }
+
+        #endregion
     }
 }
