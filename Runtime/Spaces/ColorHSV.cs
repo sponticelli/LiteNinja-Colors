@@ -9,12 +9,13 @@ namespace LiteNinja.Colors.Spaces
     /// H = hue, S = saturation, V = value, A = alpha
     /// @ref https://en.wikipedia.org/wiki/HSL_and_HSV
     /// </summary>
+    [Serializable]
     public struct ColorHSV
     {
-        [SerializeField] [Range(0f, 1f)] private float _hue;
-        [SerializeField] [Range(0f, 1f)] private float _saturation;
-        [SerializeField] [Range(0f, 1f)] private float _value;
-        [SerializeField] [Range(0f, 1f)] private float _alpha;
+        [SerializeField] private float _hue;
+        [SerializeField] private float _saturation;
+        [SerializeField] private float _value;
+        [SerializeField] private float _alpha;
 
         #region Accessors
 

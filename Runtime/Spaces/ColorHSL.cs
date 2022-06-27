@@ -1,4 +1,5 @@
 using System;
+using LiteNinja.Utils.Extensions;
 using UnityEngine;
 
 namespace LiteNinja.Colors.Spaces
@@ -11,10 +12,10 @@ namespace LiteNinja.Colors.Spaces
     [Serializable]
     public struct ColorHSL
     {
-        [SerializeField] [Range(0f, 0.999999999f)] private float _hue;
-        [SerializeField] [Range(0f, 1f)] private float _saturation;
-        [SerializeField] [Range(0f, 1f)] private float _lightness;
-        [SerializeField] [Range(0f, 1f)] private float _alpha;
+        [SerializeField] private float _hue;
+        [SerializeField] private float _saturation;
+        [SerializeField] private float _lightness;
+        [SerializeField] private float _alpha;
 
         /// <summary>
         /// Hue as a value between 0 and 1.
@@ -24,8 +25,13 @@ namespace LiteNinja.Colors.Spaces
             get => _hue;
             set
             {
-                _hue = value - Mathf.FloorToInt(value);
-                if (_hue < 0) _hue = 1 - _hue;
+                value %= 1f;
+                if (value < 0f)
+                {
+                    value += 1f;
+                }
+
+                _hue = value;
             }
         }
 
@@ -41,7 +47,7 @@ namespace LiteNinja.Colors.Spaces
                 Hue = value * inverseDegrees;
             }
         }
-        
+
         /// <summary>
         /// Hue in radians.
         /// </summary>
@@ -99,63 +105,47 @@ namespace LiteNinja.Colors.Spaces
         {
             var min = Mathf.Min(color.r, color.g, color.b);
             var max = Mathf.Max(color.r, color.g, color.b);
+            var saturation = 0f;
+            var hue = 0f;
+
+            var delta = max - min;
+            var add = max + min;
 
             // Calculate lightness
-            var lightness = (min + max) / 2f;
+            var lightness = add / 2f;
+
+            if (Mathf.Approximately(min, max)) return new ColorHSL(hue, saturation, lightness, color.a);
 
             // Calculate saturation
-            var saturation = 0f;
-            if (!Mathf.Approximately(min, max))
-            {
-                if (lightness <= 0.5f)
-                {
-                    saturation = (max - min) / (max + min);
-                }
-                else
-                {
-                    saturation = (max - min) / (2f - max - min);
-                }
-            }
-
-            if (saturation == 0) return new ColorHSL(0f, 0f, lightness, color.a);
-
+            saturation = lightness > 0.5f ? delta / (2f - max - min) : delta / add;
             // Calculate hue
-            var hue = 0f;
-            if (color.r >= max)
-            {
-                hue = (color.g - color.b) / (max - min);
-            }
-            else if (color.g >= max)
-            {
-                hue = 2f + (color.b - color.r) / (max - min);
-            }
-            else
-            {
-                hue = 4f + (color.r - color.g) / (max - min);
-            }
+            const float oneSixth = 1f / 6f;
+            hue = max.Approximately(color.r) ? (color.g - color.b) / delta + (color.g < color.b ? 6f : 0f) :
+                max.Approximately(color.g) ? (color.b - color.r) / delta + 2f :
+                (color.r - color.g) / delta + 4f;
+            hue *= oneSixth;
 
             return new ColorHSL(hue, saturation, lightness, color.a);
         }
 
         public static implicit operator Color(ColorHSL color)
         {
-            if (color.Saturation == 0) return new Color(color.Lightness, color.Lightness, color.Lightness, color.Alpha);
-
-            var temp1 = color.Lightness < 0.5f
-                ? color.Lightness * (1f + color.Saturation)
-                : color.Lightness + color.Saturation - color.Lightness * color.Saturation;
-            var temp2 = 2f * color.Lightness - temp1;
-
-            var r = color.Hue + 1f / 3f;
-            var g = color.Hue;
-            var b = color.Hue - 1f / 3f;
-
-            if (r > 1f) r -= 1f;
-            if (b < 0f) g += 1f;
-
-            r = CalcChannel(r, temp1, temp2);
-            g = CalcChannel(g, temp1, temp2);
-            b = CalcChannel(b, temp1, temp2);
+            const float oneThird = 1f / 3f;
+            float r, g, b;
+            if (color.Saturation == 0f)
+            {
+                r = g = b = color.Lightness;
+            }
+            else
+            {
+                var q = color.Lightness < 0.5f
+                    ? color.Lightness * (1f + color.Saturation)
+                    : color.Lightness + color.Saturation - (color.Lightness * color.Saturation);
+                var p = (2f * color.Lightness) - q;
+                r = CalcChannel(p, q, color.Hue + oneThird);
+                g = CalcChannel(p, q, color.Hue);
+                b = CalcChannel(p, q, color.Hue - oneThird);
+            }
 
             return new Color(r, g, b, color.Alpha);
         }
@@ -183,24 +173,28 @@ namespace LiteNinja.Colors.Spaces
 
         #region private methods
 
-        private static float CalcChannel(float channel, float p, float q)
+        private static float CalcChannel(float p, float q, float third)
         {
-            if (channel * 6f < 1)
+            const float oneSixth = 1f / 6f;
+            const float twoThirds = 2f / 3f;
+
+            if (third < 0f)
             {
-                return q + (p - q) * 6f * channel;
+                third += 1f;
             }
 
-            if (channel * 2f < 1)
+            if (third > 1f)
             {
-                return p;
+                third -= 1f;
             }
 
-            if (channel * 3f < 2)
+            return third switch
             {
-                return q + (p - q) * 6f * (2f / 3f - channel);
-            }
-
-            return q;
+                < oneSixth => p + ((q - p) * 6f * third),
+                < 0.5f => q,
+                < twoThirds => p + ((q - p) * (twoThirds - third) * 6f),
+                _ => p
+            };
         }
 
         #endregion

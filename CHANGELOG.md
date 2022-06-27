@@ -5,11 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-## [1.0.0] - 2022-06-26
-### Added
+## [1.0.0] - 2022-06-27
+### Breaking Changes
 - Requires LiteNinja-Utils
-- HSL Color Space
-- HSV Color Space
+### Added
+- HSL & HSV Color Space
+- Drawer for HSL & HSV Color
 
 
 
