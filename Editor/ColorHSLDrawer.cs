@@ -54,11 +54,8 @@ namespace LiteNinja_Colors.Editor
             var lightness = property.FindPropertyRelative("_lightness");
             var alpha = property.FindPropertyRelative("_alpha");
             var hsv = new ColorHSL(hue.floatValue, saturation.floatValue, lightness.floatValue, alpha.floatValue);
-            Debug.Log(hsv);
             var color = EditorGUI.ColorField(position, hsv);
-            Debug.Log(color);
             hsv = color;
-            Debug.Log(hsv);
             hue.floatValue = hsv.Hue;
             saturation.floatValue = hsv.Saturation;
             lightness.floatValue = hsv.Lightness;

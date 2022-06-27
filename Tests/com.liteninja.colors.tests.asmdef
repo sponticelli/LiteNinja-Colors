@@ -6,7 +6,9 @@
         "UnityEditor.TestRunner",
         "com.liteninja.colors"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

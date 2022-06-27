@@ -112,7 +112,7 @@ namespace LiteNinja.Colors.Spaces
             var add = max + min;
 
             // Calculate lightness
-            var lightness = add / 2f;
+            var lightness = Mathf.Clamp01(add * 0.5f);
 
             if (Mathf.Approximately(min, max)) return new ColorHSL(hue, saturation, lightness, color.a);
 
