@@ -74,7 +74,10 @@ namespace LiteNinja.Colors.extensions
             return ((Color)self).AddLightness(amount);
         }
         
-        
+        public static ColorHSV Opaque(this ColorHSV self)
+        {
+            return new ColorHSV(self.Hue, self.Saturation, self.Value, 1f);
+        }
         #endregion
         
         #region Create a new HSV starting from an existing HSV, changing one or more of the HSV values

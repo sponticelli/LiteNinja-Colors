@@ -112,6 +112,11 @@ namespace LiteNinja.Colors.extensions
                 Mathf.LerpUnclamped(self.Saturation, other.Saturation, t),
                 Mathf.LerpUnclamped(self.Lightness, other.Lightness, t), Mathf.LerpUnclamped(self.Alpha, other.Alpha, t));
         }
+        
+        public static ColorHSL Opaque(this ColorHSL self)
+        {
+            return new ColorHSL(self.Hue, self.Saturation, self.Lightness, 1f);
+        }
 
         #endregion
         
