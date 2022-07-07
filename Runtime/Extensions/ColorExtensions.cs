@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using LiteNinja.Colors.Spaces;
 using LiteNinja.Utils.Extensions;
 using UnityEngine;
@@ -9,6 +8,11 @@ namespace LiteNinja.Colors.extensions
     {
         public static readonly Color transparentBlack = new Color(0f, 0f, 0f, 0f);
 
+        public static float Brightness(this Color self)
+        {
+            const float oneOver3 = 1f / 3f;
+            return (self.r + self.g + self.b)*oneOver3;
+        }
 
         #region Create a color changing one parameter at a time
 
