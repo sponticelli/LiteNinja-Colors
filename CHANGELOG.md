@@ -11,10 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Color Extensions for Gradients
 - Color Extensions for reducing number of colors to a minimun number or merging together similar colors
 - Color Extensions for Lerp (with Tint, Shade and Tones)
+- Color Extensions for generating Harmonies
 ### Changed
 - Split ColorExtensions in multiple files by common theme
 - IPalette definition
-
 ### Removed
 - Removed Palette Generators for simpler extension methods
 
