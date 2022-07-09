@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Color Extensions for reducing number of colors to a minimun number or merging together similar colors
 - Color Extensions for Lerp (with Tint, Shade and Tones)
 - Color Extensions for generating Harmonies
+- Color Extensions for Luminance
+- Color Extensions for generating Random Color and Harmonies
 ### Changed
 - Split ColorExtensions in multiple files by common theme
 - IPalette definition
