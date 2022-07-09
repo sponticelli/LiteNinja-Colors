@@ -22,7 +22,7 @@ namespace LiteNinja.Colors.Extensions
         /// <summary>
         /// Returns the nearest websafe color to the current color.
         /// </summary>
-        public static Color Websafe(this Color color)
+        public static Color WebSafe(this Color color)
         {
             const float fiftyOneOver255 = 51f / 255f;
             var r = Mathf.Round(color.r * 5f);
@@ -31,41 +31,6 @@ namespace LiteNinja.Colors.Extensions
 
             return new Color(r * fiftyOneOver255, g * fiftyOneOver255, b * fiftyOneOver255);
         }
-    }
-
-    public static class ColorAveragingExtensions
-    {
-        public static Color Average(this Color[] self)
-        {
-            var r = 0f;
-            var g = 0f;
-            var b = 0f;
-            var a = 0f;
-            foreach (var color in self)
-            {
-                r += color.r;
-                g += color.g;
-                b += color.b;
-                a += color.a;
-            }
-
-            return new Color(r / self.Length, g / self.Length, b / self.Length, a / self.Length);
-        }
-
-        public static Color Average(this Color self, Color other)
-        {
-            return new Color((self.r + other.r) * 0.5f,
-                (self.g + other.g) * 0.5f,
-                (self.b + other.b) * 0.5f,
-                (self.a + other.a) * 0.5f);
-        }
         
-        /// <summary>
-        /// Returns the result of averaging the RGBA component values of every pixel in the texture.
-        /// </summary>
-        public static Color AverageColor(this Texture2D texture)
-        {
-            return Average(texture.GetPixels());
-        }
     }
 }

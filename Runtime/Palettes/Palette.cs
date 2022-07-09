@@ -9,24 +9,44 @@ namespace LiteNinja.Colors.Palettes
     [Serializable]
     public class Palette : IPalette
     {
-        [SerializeField] protected List<Color> _colors;
+        public List<Color> colors = new List<Color>();
+        public int Count => colors.Count;
 
-        public Palette(IEnumerable<Color> colors)
+        public Color this[int index]
         {
-            _colors = new List<Color>(colors);
+            get => colors[index];
+            set => colors[index] = value;
         }
 
-        public IEnumerator Colors()
+        public void SetAll(IEnumerable<Color> colors)
         {
-            return _colors.GetEnumerator();
+            this.colors.Clear();
+            this.colors.AddRange(colors);
         }
 
-        public int Count { get; }
-        public Color this[int index] => _colors[index];
-
-        public void Sort()
+        public IEnumerable<Color> GetAll()
         {
-            _colors.Sort((color, color1) => ((ColorHSL)color).Hue.CompareTo(((ColorHSL)color1).Hue));
+            return colors;
+        }
+
+        public void Add(Color color)
+        {
+            colors.Add(color);
+        }
+
+        public void Remove(Color color)
+        {
+            colors.Remove(color);
+        }
+
+        public void RemoveAt(int index)
+        {
+            colors.RemoveAt(index);
+        }
+
+        public Color Random()
+        {
+            return colors[UnityEngine.Random.Range(0, colors.Count)];
         }
     }
 }

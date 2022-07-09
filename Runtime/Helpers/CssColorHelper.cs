@@ -187,7 +187,7 @@ namespace LiteNinja_Colors.Runtime
             var closest = "black";
             foreach (var c in CssColors)
             {
-                var tmp = (c.Value - color);
+                var tmp = c.Value - color;
                 var dist = tmp.r * tmp.r + tmp.g * tmp.g + tmp.b * tmp.b;
                 if (dist > minDist) continue;
                 minDist = dist;
@@ -204,7 +204,7 @@ namespace LiteNinja_Colors.Runtime
             var closest = Color.black;
             foreach (var c in CssColors)
             {
-                var tmp = (c.Value - color);
+                var tmp = c.Value - color;
                 var dist = tmp.r * tmp.r + tmp.g * tmp.g + tmp.b * tmp.b;
                 if (dist > minDist) continue;
                 minDist = dist;

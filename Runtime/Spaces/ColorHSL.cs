@@ -140,8 +140,8 @@ namespace LiteNinja.Colors.Spaces
             {
                 var q = color.Lightness < 0.5f
                     ? color.Lightness * (1f + color.Saturation)
-                    : color.Lightness + color.Saturation - (color.Lightness * color.Saturation);
-                var p = (2f * color.Lightness) - q;
+                    : color.Lightness + color.Saturation - color.Lightness * color.Saturation;
+                var p = 2f * color.Lightness - q;
                 r = CalcChannel(p, q, color.Hue + oneThird);
                 g = CalcChannel(p, q, color.Hue);
                 b = CalcChannel(p, q, color.Hue - oneThird);
@@ -190,9 +190,9 @@ namespace LiteNinja.Colors.Spaces
 
             return third switch
             {
-                < oneSixth => p + ((q - p) * 6f * third),
+                < oneSixth => p + (q - p) * 6f * third,
                 < 0.5f => q,
-                < twoThirds => p + ((q - p) * (twoThirds - third) * 6f),
+                < twoThirds => p + (q - p) * (twoThirds - third) * 6f,
                 _ => p
             };
         }
