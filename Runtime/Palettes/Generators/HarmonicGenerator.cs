@@ -1,4 +1,4 @@
-using System.Linq;
+using System;
 using LiteNinja.Colors.Spaces;
 using UnityEngine;
 
@@ -9,11 +9,12 @@ namespace LiteNinja.Colors.Palettes.Generators
     /// </summary>
     public class HarmonicGenerator : AGenerator
     {
+        [SerializeField]
         private Options _options;
 
         public HarmonicGenerator(int? seed, Options? options) : base(seed)
         {
-            _options = options ?? new Options()
+            _options = options ?? new Options
             {
                 referenceAngle = ((float)_random.NextDouble() * 360.0f, (float)_random.NextDouble() * 360.0f),
                 offsetAngle1 = ((float)_random.NextDouble() * 360.0f, (float)_random.NextDouble() * 360.0f),
@@ -64,6 +65,7 @@ namespace LiteNinja.Colors.Palettes.Generators
             return new Palette(colors);
         }
         
+        [Serializable]
         public struct Options
         {
             public (float, float) referenceAngle; // The reference angle of the harmony (in degrees)

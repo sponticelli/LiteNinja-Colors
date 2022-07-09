@@ -10,7 +10,7 @@ namespace LiteNinja.Colors.Palettes.Generators
         public AGenerator(int? seed)
         {
             _seed = seed ?? DateTime.Now.Millisecond;
-            _random = new System.Random(_seed);
+            _random = new Random(_seed);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace LiteNinja.Colors.Palettes.Generators
             {
                 _seed = newSeed.Value;
             }
-            _random = new System.Random(_seed);
+            _random = new Random(_seed);
         }
 
         public abstract IPalette Generate(int count);

@@ -2,7 +2,7 @@ using LiteNinja.Colors.Spaces;
 using LiteNinja.Utils.Extensions;
 using UnityEngine;
 
-namespace LiteNinja.Colors.extensions
+namespace LiteNinja.Colors.Extensions
 {
     public static class ColorHSVExtensions
     {

@@ -1,4 +1,5 @@
-using LiteNinja.Colors.extensions;
+using System;
+using LiteNinja.Colors.Extensions;
 using LiteNinja.Colors.Spaces;
 using UnityEngine;
 
@@ -6,16 +7,22 @@ namespace LiteNinja.Colors.Palettes.Generators
 {
     public class RandomWalkGenerator : AGenerator
     {
-        private Options _options;
+        [SerializeField] private Options _options;
 
         public RandomWalkGenerator(int? seed, Options? options) : base(seed)
         {
-            _options = options ?? new Options()
+            _options = options ?? new Options
             {
-                color = new Color((float)_random.Next(), (float)_random.Next(), (float)_random.Next()),
-                offsetRange = ((float)_random.Next(), (float)_random.Next()),
-                fixLightness = _random.Next(0, 2) == 0,
+                color = new Color(_random.Next(), _random.Next(), _random.Next()),
+                offsetRange = (_random.Next(), _random.Next()),
+                fixLightness = _random.Next(0, 2) == 0
             };
+        }
+
+        public void Reset(Options options, int? seed)
+        {
+            base.Reset(seed);
+            _options = options;
         }
 
         public override IPalette Generate(int count)
@@ -27,7 +34,7 @@ namespace LiteNinja.Colors.Palettes.Generators
                 var amplitude = _options.offsetRange.Item1 +
                                 _random.NextDouble() * (_options.offsetRange.Item2 - _options.offsetRange.Item1);
                 var offset = new Vector3((float)(amplitude * _random.NextDouble()),
-                    (float)(amplitude * _random.NextDouble()), 
+                    (float)(amplitude * _random.NextDouble()),
                     (float)(amplitude * _random.NextDouble()));
                 newColor = new Color(
                     Mathf.Clamp01(newColor.r + offset.x),
@@ -48,6 +55,7 @@ namespace LiteNinja.Colors.Palettes.Generators
             return new Palette(colors);
         }
 
+        [Serializable]
         public class Options
         {
             public Color color;

@@ -1,5 +1,5 @@
 using System;
-using LiteNinja.Colors.extensions;
+using LiteNinja.Colors.Extensions;
 using LiteNinja.Colors.Spaces;
 using NUnit.Framework;
 using UnityEngine;
