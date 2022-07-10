@@ -1764,13 +1764,23 @@ namespace LiteNinja_Colors.Runtime
 
             name += color.Lightness switch
             {
-                < 0.1f => "blackish ",
+                < 0.1f => "pitch-black ",
+                < 0.15f => "blackened ",
+                < 0.2f => "pitch-dark ",
                 < 0.25f => "dark ",
-                < 0.5f => "darkish ",
-                < 0.65f => "",
-                < 0.70f => "lightish ",
-                < 0.75f => "light ",
-                < 0.9f => "very light ",
+                < 0.3f => "darkish ",
+                < 0.35f => "darksome ",
+                < 0.4f => "dusky ",
+                < 0.45f => "dim ",
+                < 0.55f => "",
+                < 0.6f => "clear ",
+                < 0.65f => "light ",
+                < 0.7f => "brilliant ",
+                < 0.75f => "bright ",
+                < 0.8f => "flaring ",
+                < 0.85f => "scintillating ",
+                < 0.9f => "shiny ",
+                < 0.95f => "glimmering ",
                 _ => "whitish ",
             };
             
@@ -1778,29 +1788,50 @@ namespace LiteNinja_Colors.Runtime
             name += color.Saturation switch
             {
                 // Saturation
-                < 0.1f => "grey ",
-                < 0.25f => "grayish ",
-                < 0.5f => "medium grey ",
-                < 0.65f => "medium ",
-                < 0.70f => "medium bright ",
-                < 0.75f => "bright ",
-                < 0.9f => "very bright ",
+                < 0.07f => "leaden ",
+                < 0.14f => "dull ",
+                < 0.21f => "heavy ",
+                < 0.28f => "pale ",
+                < 0.35f => "faded ",
+                < 0.42f => "blached ",
+                < 0.49f => "flabby ",
+                < 0.56f => "",
+                < 0.63f => "medium ",
+                < 0.70f => "lavish ",
+                < 0.77f => "imbued ",
+                < 0.84f => "packed ",
+                < 0.91f => "vivid ",
+                < 0.98f => "full ",
                 _ => "saturated "
             };
 
-            name += color.Hue switch
+            name += color.HueDegrees switch
             {
                 // Hue
-                < 18f/255f => "red",
-                < 36f/255f => "orange",
-                < 54f/255f => "yellow",
-                < 72f/255f => "green",
-                < 90f/255f => "cyan",
-                < 108f/255f => "blue",
-                < 126f/255f => "purple",
-                < 144f/255f => "magenta",
-                < 162f/255f => "pink",
-                < 180f/255f => "rose",
+                < 7.5f => "red",
+                < 22.5f => "vermillon",
+                < 37.5f => "orange",
+                < 52.5f => "amber",
+                < 67.5f => "yellow",
+                < 82.5f => "lime",
+                < 97.5f => "chartreuse",
+                < 112.5f => "green",
+                < 127.5f => "cobalt green",
+                < 142.5f => "turquoise",
+                < 157.5f => "emerald green",
+                < 172.5f => "bluish green",
+                < 187.5f => "cyan",
+                < 202.5f => "cerulean blue",
+                < 217.5f => "azure",
+                < 232.5f => "cobalt",
+                < 247.5f => "blue",
+                < 262.5f => "hyacinth",
+                < 277.5f => "violet",
+                < 292.5f => "purple",
+                < 307.5f => "magenta",
+                < 322.5f => "reddish purple",
+                < 337.5f => "crimson",
+                < 352.5f => "carmine",
                 _ => "red",
             };
 
