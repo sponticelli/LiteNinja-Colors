@@ -1,4 +1,5 @@
 using System;
+using LiteNinja_Colors.Runtime;
 using UnityEngine;
 
 namespace LiteNinja.Colors.Extensions
@@ -7,6 +8,14 @@ namespace LiteNinja.Colors.Extensions
     {
         public static readonly Color transparentBlack = new Color(0f, 0f, 0f, 0f);
 
+        /// <summary>
+        /// Find the closest color name in the CssColors dictionary.
+        /// </summary>
+        
+        public static string ToCssColor(this Color color)
+        {
+           return ColorNameHelper.FindClosestName(color);
+        }
 
         /// <summary>
         /// Returns the nearest websafe color to the current color.
