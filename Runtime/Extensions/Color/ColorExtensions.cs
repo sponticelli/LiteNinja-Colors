@@ -9,10 +9,29 @@ namespace LiteNinja.Colors.Extensions
         public static readonly Color transparentBlack = new Color(0f, 0f, 0f, 0f);
 
         /// <summary>
-        /// Find the closest color name in the CssColors dictionary.
+        /// Convert hex string to color.
         /// </summary>
+        /// <param name="hex">Hex string.</param>
         
-        public static string ToCssColor(this Color color)
+        public static Color HexToColor(this string hex)
+        {
+            hex = hex.Replace("#", "");
+            var r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            var g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            var b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            return new Color32(r, g, b, 255);
+        }
+        
+        public static string ToHtmlStringRGB(this Color color)
+        {
+            return ColorUtility.ToHtmlStringRGB(color);
+        }
+        
+        
+        /// <summary>
+        /// Find the closest color name.
+        /// </summary>
+        public static string ToNearestName(this Color color)
         {
            return ColorNameHelper.FindClosestName(color);
         }
