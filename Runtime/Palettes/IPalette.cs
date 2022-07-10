@@ -37,6 +37,11 @@ namespace LiteNinja.Colors.Palettes
         /// </summary>
         /// <param name="color">The color to add.</param>
         void Add(Color color);
+        
+        /// <summary>
+        /// Adds colors to the palette.
+        /// </summary>
+        void AddRange(IEnumerable<Color> colors);
 
         /// <summary>
         /// Removes a specified color from the palette.

@@ -34,6 +34,11 @@ namespace LiteNinja.Colors.Palettes
             colors.Add(color);
         }
 
+        public void AddRange(IEnumerable<Color> colors)
+        {
+            this.colors.AddRange(colors);
+        }
+
         public void Remove(Color color)
         {
             colors.Remove(color);
