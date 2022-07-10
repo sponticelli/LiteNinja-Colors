@@ -9,6 +9,9 @@ namespace LiteNinja.Colors.Palettes
     /// </summary>
     public interface IPalette
     {
+        public delegate void PaletteChange();
+        event PaletteChange OnPaletteChange;
+        
         /// <summary>
         /// Returns the number of colors in the palette
         /// </summary>
@@ -53,11 +56,22 @@ namespace LiteNinja.Colors.Palettes
         /// Removes the color at the specified index.
         /// </summary>
         public void RemoveAt(int index);
+        
+        /// <summary>
+        /// Replace the colors with the colors of another palette.
+        /// </summary>
+        void ReplaceFromPalette(IPalette palette);
+        
+        /// <summary>
+        /// Add colors from another palette to the end of the current palette.
+        /// </summary>
+        void AddFromPalette(IPalette palette);
 
         /// <summary>
-        /// Returns a random color from the palette.
+        /// A Texture2D containing the colors of the palette.
         /// </summary>
-        /// <returns>A random color from the palette.</returns>
-        Color Random();
+        Texture2D Texture { get; }
+        
+        
     }
 }

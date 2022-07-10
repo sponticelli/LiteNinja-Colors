@@ -5,7 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 ### Added
-- Add range of colors to a palette
+- Range of colors to a palette
+- More adjectives to describe a color using hue, saturation, and lightness
+- Scriptable Object Palette
+- Palette now can return a texture with all the colors
+- A way to use a Scriptable Object Palette to set colors of Unity components
 
 ## [1.1.3] - 2022-07-10
 ### Added
