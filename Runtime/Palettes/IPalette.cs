@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +10,7 @@ namespace LiteNinja.Colors.Palettes
     /// </summary>
     public interface IPalette
     {
-        public delegate void PaletteChange();
-        event PaletteChange OnPaletteChange;
-        
+
         /// <summary>
         /// Returns the number of colors in the palette
         /// </summary>
@@ -23,6 +22,10 @@ namespace LiteNinja.Colors.Palettes
         /// <param name="index">The index of the color to get or set.</param>
         Color this[int index] { get; set; }
 
+        /// <summary>
+        /// A Texture2D containing the colors of the palette.
+        /// </summary>
+        Texture2D Texture { get; }
 
         /// <summary>
         /// Set all colors in the palette to the specified array of colors.
@@ -67,11 +70,9 @@ namespace LiteNinja.Colors.Palettes
         /// </summary>
         void AddFromPalette(IPalette palette);
 
-        /// <summary>
-        /// A Texture2D containing the colors of the palette.
-        /// </summary>
-        Texture2D Texture { get; }
         
+        void AddListener(Action listener);
+        void RemoveListener(Action listener);
         
     }
 }

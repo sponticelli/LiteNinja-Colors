@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Themes
 {
-    [CreateAssetMenu(menuName = "LiteNinja/Colors/PaletteSO", fileName = "PaletteSO", order = 0)]
+    [CreateAssetMenu(menuName = "LiteNinja/Colors/Themes/Palette", fileName = "PaletteSO", order = 0)]
     [Serializable]
-    public class PaletteSO : ScriptableObject, IPalette
+    public class PaletteSO : ScriptableObject, IPalette, ISerializationCallbackReceiver
     {
         [SerializeField]
         private Palette _palette = new();
-        public event IPalette.PaletteChange OnPaletteChange;
+        private List<Action> _listeners = new();
         public int Count { get; }
 
         public Color this[int index]
@@ -19,14 +19,16 @@ namespace LiteNinja.Colors.Themes
             get => _palette[index];
             set  {
                 _palette[index] = value;
-                OnPaletteChange?.Invoke();
+                Invoke();
             }
         }
+
+        
 
         public void SetAll(IEnumerable<Color> colors)
         {
             _palette.SetAll(colors);
-            OnPaletteChange?.Invoke();
+            Invoke();
         }
 
         public IEnumerable<Color> GetAll()
@@ -37,39 +39,66 @@ namespace LiteNinja.Colors.Themes
         public void Add(Color color)
         {
             _palette.Add(color);
-            OnPaletteChange?.Invoke();
+            Invoke();
         }
 
         public void AddRange(IEnumerable<Color> colors)
         {
             _palette.AddRange(colors);
-            OnPaletteChange?.Invoke();
+            Invoke();
         }
 
         public void Remove(Color color)
         {
             _palette.Remove(color);
-            OnPaletteChange?.Invoke();
+            Invoke();
         }
 
         public void RemoveAt(int index)
         {
             _palette.RemoveAt(index);
-            OnPaletteChange?.Invoke();
+            Invoke();
         }
 
         public void ReplaceFromPalette(IPalette palette)
         {
             _palette.ReplaceFromPalette(palette);
-            OnPaletteChange?.Invoke();
+            Invoke();
         }
 
         public void AddFromPalette(IPalette palette)
         {
             _palette.AddFromPalette(palette);
-            OnPaletteChange?.Invoke();
+            Invoke();
+        }
+
+        public void AddListener(Action listener)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveListener(Action listener)
+        {
+            throw new NotImplementedException();
         }
 
         public Texture2D Texture => _palette.Texture;
+        public void OnBeforeSerialize()
+        {
+            
+        }
+
+        public void OnAfterDeserialize()
+        {
+            Invoke();
+        }
+        
+        private void Invoke()
+        {
+            foreach (var listener in _listeners)
+            {
+                listener?.Invoke();
+            }
+        }
     }
 }
