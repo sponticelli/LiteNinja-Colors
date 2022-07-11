@@ -2,10 +2,10 @@ using LiteNinja.Colors.Spaces;
 using UnityEditor;
 using UnityEngine;
 
-namespace LiteNinja_Colors.Editor
+namespace LiteNinja.Colors.Editor.Spaces
 {
-    [CustomPropertyDrawer(typeof(ColorHSL))]
-    public class ColorHSLDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(ColorHSV))]
+    public class ColorHSVDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -27,7 +27,7 @@ namespace LiteNinja_Colors.Editor
                 
                 position.y += yStep;
                 fieldRect.y = position.y;
-                DrawSliderField(fieldRect, property, "_lightness", "Lightness");
+                DrawSliderField(fieldRect, property, "_value", "Value");
                 
                 position.y += yStep;
                 fieldRect.y = position.y;
@@ -49,17 +49,16 @@ namespace LiteNinja_Colors.Editor
 
         private static void DrawColorField(Rect position, SerializedProperty property)
         {
-            var hue = property.FindPropertyRelative("_hue");
-            var saturation = property.FindPropertyRelative("_saturation");
-            var lightness = property.FindPropertyRelative("_lightness");
-            var alpha = property.FindPropertyRelative("_alpha");
-            var hsv = new ColorHSL(hue.floatValue, saturation.floatValue, lightness.floatValue, alpha.floatValue);
-            var color = EditorGUI.ColorField(position, hsv);
-            hsv = color;
-            hue.floatValue = hsv.Hue;
-            saturation.floatValue = hsv.Saturation;
-            lightness.floatValue = hsv.Lightness;
-            alpha.floatValue = hsv.Alpha;
+            var h = property.FindPropertyRelative("_hue");
+            var s = property.FindPropertyRelative("_saturation");
+            var v = property.FindPropertyRelative("_value");
+            var a = property.FindPropertyRelative("_alpha");
+            var hsv = new ColorHSV(h.floatValue, s.floatValue, v.floatValue, a.floatValue);
+            hsv = EditorGUI.ColorField(position, hsv);
+            h.floatValue = hsv.Hue;
+            s.floatValue = hsv.Saturation;
+            v.floatValue = hsv.Value;
+            a.floatValue = hsv.Alpha;
         }
 
         private static void DrawSliderField(Rect position, SerializedProperty property, string name, string label)
@@ -78,4 +77,6 @@ namespace LiteNinja_Colors.Editor
             return EditorGUIUtility.singleLineHeight;
         }
     }
+
+
 }

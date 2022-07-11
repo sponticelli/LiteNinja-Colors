@@ -9,6 +9,7 @@ namespace LiteNinja.Colors.Palettes
     [Serializable]
     public class Palette : IPalette
     {
+        [SerializeField]
         protected List<Color> _colors = new();
         [NonSerialized]
         private Texture2D _texture;
@@ -74,6 +75,12 @@ namespace LiteNinja.Colors.Palettes
             Trigger();
         }
 
+        public void Clear()
+        {
+            _colors.Clear();
+            Trigger();
+        }
+
         public void ReplaceFromPalette(IPalette palette)
         {
             _colors.Clear();
@@ -113,6 +120,7 @@ namespace LiteNinja.Colors.Palettes
         {
             if (_colors.Count > 0)
             {
+                Debug.Log(_colors.Count);
                 _texture = new Texture2D(_colors.Count, 1)
                 {
                     filterMode = FilterMode.Point
@@ -132,6 +140,10 @@ namespace LiteNinja.Colors.Palettes
                 listener?.Invoke();
             }
         }
-        
+
+        public bool Contains(Color color)
+        {
+            return _colors.Contains(color);
+        }
     }
 }

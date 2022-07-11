@@ -60,6 +60,8 @@ namespace LiteNinja.Colors.Palettes
         /// </summary>
         public void RemoveAt(int index);
         
+        public  void Clear();
+        
         /// <summary>
         /// Replace the colors with the colors of another palette.
         /// </summary>
@@ -70,6 +72,7 @@ namespace LiteNinja.Colors.Palettes
         /// </summary>
         void AddFromPalette(IPalette palette);
 
+        bool Contains(Color color);
         
         void AddListener(Action listener);
         void RemoveListener(Action listener);

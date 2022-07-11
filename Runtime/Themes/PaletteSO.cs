@@ -11,8 +11,9 @@ namespace LiteNinja.Colors.Themes
     {
         [SerializeField]
         private Palette _palette = new();
+        
         private List<Action> _listeners = new();
-        public int Count { get; }
+        public int Count => _palette.Count;
 
         public Color this[int index]
         {
@@ -34,6 +35,11 @@ namespace LiteNinja.Colors.Themes
         public IEnumerable<Color> GetAll()
         {
             return _palette.GetAll();
+        }
+        
+        public bool Contains(Color color)
+        {
+            return _palette.Contains(color);
         }
 
         public void Add(Color color)
@@ -57,6 +63,12 @@ namespace LiteNinja.Colors.Themes
         public void RemoveAt(int index)
         {
             _palette.RemoveAt(index);
+            Invoke();
+        }
+
+        public void Clear()
+        {
+            _palette.Clear();
             Invoke();
         }
 
@@ -93,7 +105,7 @@ namespace LiteNinja.Colors.Themes
             Invoke();
         }
         
-        private void Invoke()
+        public void Invoke()
         {
             foreach (var listener in _listeners)
             {
