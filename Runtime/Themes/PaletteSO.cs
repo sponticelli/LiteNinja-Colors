@@ -86,12 +86,12 @@ namespace LiteNinja.Colors.Themes
 
         public void AddListener(Action listener)
         {
-            throw new NotImplementedException();
+            _listeners.Add(listener);
         }
 
         public void RemoveListener(Action listener)
         {
-            throw new NotImplementedException();
+            _listeners.Remove(listener);
         }
 
         public Texture2D Texture => _palette.Texture;

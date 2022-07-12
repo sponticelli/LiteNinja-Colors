@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using LiteNinja.Colors.Themes;
 using UnityEditor;
@@ -5,14 +6,15 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Editor.Themes
 {
-    public class PaletteColorsDrawer
+    public class PaletteSOEditorHelper
     {
-        public const int itemsPerRow = 8;
-        static GUIStyle tempDrawTextureStyle;
-        static Texture2D blackTexture;
-        static Texture2D whiteTexture;
-        static Texture2D paletteTexture;
-        static int paletteTextureCachedHashCode;
+        public const int itemsPerRow = 12;
+        
+        private static GUIStyle _tempDrawTextureStyle;
+        private static Texture2D _blackTexture;
+        private static Texture2D _whiteTexture;
+        private static Texture2D _paletteTexture;
+        private static int _paletteTextureCachedHashCode;
 
         public static bool DrawColorPalette(PaletteSO palette, ref int colorKey, bool drawNewColorButton)
         {
@@ -26,25 +28,25 @@ namespace LiteNinja.Colors.Editor.Themes
             if (palette.Count > 0)
             {
                 var paletteHash = palette.Texture.GetHashCode();
-                if (paletteTexture == null || paletteTextureCachedHashCode != paletteHash)
+                if (_paletteTexture == null || _paletteTextureCachedHashCode != paletteHash)
                 {
-                    paletteTexture = textureWithColors(palette.GetAll().ToArray());
-                    paletteTextureCachedHashCode = paletteHash;
+                    _paletteTexture = TextureWithColors(palette.GetAll().ToArray());
+                    _paletteTextureCachedHashCode = paletteHash;
                 }
             }
             else
             {
-                paletteTexture = null;
+                _paletteTexture = null;
             }
 
-            if (blackTexture == null)
+            if (_blackTexture == null)
             {
-                blackTexture = textureWithColor(Color.black);
+                _blackTexture = TextureWithColor(Color.black);
             }
 
-            if (whiteTexture == null)
+            if (_whiteTexture == null)
             {
-                whiteTexture = textureWithColor(Color.white);
+                _whiteTexture = TextureWithColor(Color.white);
             }
 
             var numColors = palette.Count;
@@ -53,11 +55,11 @@ namespace LiteNinja.Colors.Editor.Themes
 
             float heightOfPalette = 0;
             var textureRect = new Rect(lastRect.x, lastRect.y + lastRect.height, 0.0f, 0.0f);
-            if (paletteTexture != null)
+            if (_paletteTexture != null)
             {
                 textureRect = new Rect(lastRect.x, lastRect.y + lastRect.height,
-                    paletteTexture.width * EditorGUIUtility.singleLineHeight,
-                    paletteTexture.height * EditorGUIUtility.singleLineHeight);
+                    _paletteTexture.width * EditorGUIUtility.singleLineHeight,
+                    _paletteTexture.height * EditorGUIUtility.singleLineHeight);
                 heightOfPalette = textureRect.height;
             }
 
@@ -75,12 +77,12 @@ namespace LiteNinja.Colors.Editor.Themes
             clickRect.height = heightOfPalette;
 
             GUILayoutUtility.GetRect(clickRect.width, clickRect.height);
-            if (paletteTexture != null)
+            if (_paletteTexture != null)
             {
-                DrawTexture(paletteTexture, textureRect);
-                DrawBlackGrid(textureRect.x, textureRect.y, palette.Count,
-                    paletteTexture.width, paletteTexture.height,
-                    (int)EditorGUIUtility.singleLineHeight, blackTexture);
+                DrawRect(_paletteTexture, textureRect);
+                DrawBlock(textureRect.x, textureRect.y, palette.Count,
+                    _paletteTexture.width, _paletteTexture.height,
+                    (int)EditorGUIUtility.singleLineHeight, _blackTexture);
             }
 
             if (drawNewColorButton)
@@ -97,7 +99,7 @@ namespace LiteNinja.Colors.Editor.Themes
                     var rectClickPosition = e.mousePosition - textureRect.position;
                     var cellXIndex = (int)(rectClickPosition.x / EditorGUIUtility.singleLineHeight);
                     var cellYIndex = (int)(rectClickPosition.y / EditorGUIUtility.singleLineHeight);
-                    var textureWidth = paletteTexture != null ? paletteTexture.width : 0;
+                    var textureWidth = _paletteTexture != null ? _paletteTexture.width : 0;
                     var clickedOnKey = cellYIndex * textureWidth + cellXIndex;
                     if (numColors > 0 && clickedOnKey < numColors)
                     {
@@ -111,23 +113,19 @@ namespace LiteNinja.Colors.Editor.Themes
                         palette.Invoke();
                         somethingHasChanged = true;
                     }
-                    else
-                    {
-                    }
                 }
             }
 
-            if (palette.Count > 0)
-            {
-                DrawOnSelectedCell(colorKey, textureRect);
-                var selectedColorRow = colorKey / PaletteColorsDrawer.itemsPerRow;
-                var selectedColorY = selectedColorRow * EditorGUIUtility.singleLineHeight +
-                                     EditorGUIUtility.singleLineHeight;
-                var colorKeyRect =
-                    new Rect(lastRect.x + PaletteColorsDrawer.itemsPerRow * EditorGUIUtility.singleLineHeight,
-                        lastRect.y + selectedColorY, 64, EditorGUIUtility.singleLineHeight);
-                EditorGUI.LabelField(colorKeyRect, colorKey.ToString());
-            }
+            if (palette.Count <= 0) return somethingHasChanged;
+            
+            DrawOnSelectedCell(colorKey, textureRect);
+            var selectedColorRow = colorKey / itemsPerRow;
+            var selectedColorY = selectedColorRow * EditorGUIUtility.singleLineHeight +
+                                 EditorGUIUtility.singleLineHeight;
+            var colorKeyRect =
+                new Rect(lastRect.x + (1+itemsPerRow) * EditorGUIUtility.singleLineHeight,
+                    lastRect.y + selectedColorY, 64, EditorGUIUtility.singleLineHeight);
+            EditorGUI.LabelField(colorKeyRect, colorKey.ToString());
 
             return somethingHasChanged;
         }
@@ -136,29 +134,21 @@ namespace LiteNinja.Colors.Editor.Themes
         {
             var slh = (int)(EditorGUIUtility.singleLineHeight);
             var slhHalf = (int)(slh * 0.5f);
-            if (blackTexture == null)
+            if (_blackTexture == null)
             {
-                blackTexture = textureWithColor(Color.black);
+                _blackTexture = TextureWithColor(Color.black);
             }
 
-            DrawBlackGrid(x, y, 1, 1, 1, slh, blackTexture);
-            DrawBlackGrid(x + 1, y + 1, 1, 1, 1, slh - 2, whiteTexture);
+            DrawBlock(x, y, 1, 1, 1, slh, _blackTexture);
+            DrawBlock(x + 1, y + 1, 1, 1, 1, slh - 2, _whiteTexture);
 
-            var minusLength = 7;
-            var halfMinusLength = 3;
+            const int minusLength = 7;
+            const int halfMinusLength = 3;
 
             var minusRect = new Rect(x + slhHalf - halfMinusLength, y + slhHalf, minusLength, 1);
-            DrawTexture(blackTexture, minusRect);
+            DrawRect(_whiteTexture, minusRect);
             var clickRect = new Rect(x, y, slh, slh);
-            if (IsClick())
-            {
-                if (IsClickInRect(clickRect))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return IsClick() && IsClickInRect(clickRect);
         }
 
         public static Rect GetNewColorButtonRect(PaletteSO palette)
@@ -176,7 +166,7 @@ namespace LiteNinja.Colors.Editor.Themes
             return r;
         }
 
-        static void DrawBlackGrid(float startingPointX, float startingPointY, int numColors, int cellsX, int cellsY,
+        private static void DrawBlock(float startingPointX, float startingPointY, int numColors, int cellsX, int cellsY,
             int cellSize, Texture2D colorTexture)
         {
             if (cellsX == 0 && cellsY == 0)
@@ -201,7 +191,7 @@ namespace LiteNinja.Colors.Editor.Themes
                 currentRect.x = startingPointX + cellSize * i;
                 var bottomCellExists = numInBottomRow == 0 || i <= numInBottomRow;
                 currentRect.height = bottomCellExists ? fullHeight : oneLessHeight;
-                DrawTexture(colorTexture, currentRect);
+                DrawRect(colorTexture, currentRect);
             }
 
             // draw horizontal lines
@@ -216,71 +206,67 @@ namespace LiteNinja.Colors.Editor.Themes
                     currentRect.width = numInBottomRow * cellSize;
                 }
 
-                DrawTexture(colorTexture, currentRect);
+                DrawRect(colorTexture, currentRect);
             }
         }
 
-        static void DrawOnSelectedCell(int selectedCell, Rect textureRect)
+        private static void DrawOnSelectedCell(int selectedCell, Rect textureRect)
         {
             var selectedCellY = selectedCell / itemsPerRow;
             var selectedCellX = selectedCell - (itemsPerRow * selectedCellY);
             var smallBlackRect = new Rect(textureRect.x + selectedCellX * EditorGUIUtility.singleLineHeight,
                 textureRect.y + selectedCellY * EditorGUIUtility.singleLineHeight, 10f, 10f);
-            DrawBlackGrid(smallBlackRect.x - 1, smallBlackRect.y - 1, 1, 1, 1,
-                (int)(EditorGUIUtility.singleLineHeight) + 2, blackTexture);
-            DrawBlackGrid(smallBlackRect.x, smallBlackRect.y, 1, 1, 1, (int)(EditorGUIUtility.singleLineHeight),
-                whiteTexture);
+            DrawBlock(smallBlackRect.x - 1, smallBlackRect.y - 1, 1, 1, 1,
+                (int)(EditorGUIUtility.singleLineHeight) + 2, _blackTexture);
+            DrawBlock(smallBlackRect.x, smallBlackRect.y, 1, 1, 1, (int)(EditorGUIUtility.singleLineHeight),
+                _whiteTexture);
         }
 
-        static void DrawNewColorButton(int selectedCell, Rect textureRect)
+        private static void DrawNewColorButton(int selectedCell, Rect textureRect)
         {
             var selectedCellY = selectedCell / itemsPerRow;
             var selectedCellX = selectedCell - (itemsPerRow * selectedCellY);
             var smallBlackRect = new Rect(textureRect.x + selectedCellX * EditorGUIUtility.singleLineHeight,
                 textureRect.y + selectedCellY * EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight,
                 EditorGUIUtility.singleLineHeight);
-            DrawBlackGrid(smallBlackRect.x, smallBlackRect.y, 1, 1, 1, (int)(EditorGUIUtility.singleLineHeight),
-                blackTexture);
-            DrawBlackGrid(smallBlackRect.x + 1, smallBlackRect.y + 1, 1, 1, 1,
-                (int)(EditorGUIUtility.singleLineHeight - 2), whiteTexture);
+            DrawBlock(smallBlackRect.x, smallBlackRect.y, 1, 1, 1, (int)(EditorGUIUtility.singleLineHeight),
+                _blackTexture);
+            DrawBlock(smallBlackRect.x + 1, smallBlackRect.y + 1, 1, 1, 1,
+                (int)(EditorGUIUtility.singleLineHeight - 2), _whiteTexture);
 
-            var plusLength = 7;
-            var halfPlusLength = 3.0f;
+            const int plusLength = 7;
+            const float halfPlusLength = 3.0f;
 
             var centerX = smallBlackRect.x + smallBlackRect.width * 0.5f;
             var centerY = smallBlackRect.y + smallBlackRect.height * 0.5f;
             var plusVerticalRect = new Rect(centerX, centerY - halfPlusLength, 1, plusLength);
             var plusHorizontalRect = new Rect(centerX - halfPlusLength, centerY, plusLength, 1);
-            DrawTexture(blackTexture, plusVerticalRect);
-            DrawTexture(blackTexture, plusHorizontalRect);
+            DrawRect(_whiteTexture, plusVerticalRect);
+            DrawRect(_whiteTexture, plusHorizontalRect);
         }
 
-        
 
-        static void DrawTexture(Texture2D texture, Rect rect)
+        private static void DrawRect(Texture2D texture, Rect rect)
         {
-            if (tempDrawTextureStyle == null)
-            {
-                tempDrawTextureStyle = new GUIStyle();
-            }
+            _tempDrawTextureStyle ??= new GUIStyle();
 
-            tempDrawTextureStyle.normal.background = texture;
-            EditorGUI.LabelField(rect, "", tempDrawTextureStyle);
+            _tempDrawTextureStyle.normal.background = texture;
+            EditorGUI.LabelField(rect, "", _tempDrawTextureStyle);
         }
 
-        static bool IsClick()
+        private static bool IsClick()
         {
             var e = Event.current;
             return e != null && e.type == EventType.MouseDown && e.button == 0;
         }
 
-        static bool IsClickInRect(Rect rect)
+        private static bool IsClickInRect(Rect rect)
         {
             var e = Event.current;
-            return e != null && e.type == EventType.MouseDown && e.button == 0 && rect.Contains(e.mousePosition);
+            return e is { type: EventType.MouseDown, button: 0 } && rect.Contains(e.mousePosition);
         }
 
-        static Texture2D textureWithColor(Color color)
+        private static Texture2D TextureWithColor(Color color)
         {
             var tex = new Texture2D(1, 1, TextureFormat.RGB24, false, true)
             {
@@ -293,15 +279,15 @@ namespace LiteNinja.Colors.Editor.Themes
             return tex;
         }
 
-        static Texture2D textureWithColors(Color[] colors)
+        private static Texture2D TextureWithColors(IReadOnlyList<Color> colors)
         {
-            if (colors == null || colors.Length == 0)
+            if (colors == null || colors.Count == 0)
             {
                 return new Texture2D(0, 0, TextureFormat.RGBA32, false, true);
             }
 
             // figure out our texture size based on the itemsPerRow and color count
-            var totalRows = Mathf.CeilToInt((float)colors.Length / (float)itemsPerRow);
+            var totalRows = Mathf.CeilToInt((float)colors.Count / (float)itemsPerRow);
             var tex = new Texture2D(itemsPerRow, totalRows, TextureFormat.RGBA32, false, true)
             {
                 filterMode = FilterMode.Point,
@@ -310,7 +296,7 @@ namespace LiteNinja.Colors.Editor.Themes
             };
             var x = 0;
             var y = 0;
-            for (var i = 0; i < colors.Length; i++)
+            for (var i = 0; i < colors.Count; i++)
             {
                 x = i % itemsPerRow;
                 y = totalRows - 1 - Mathf.CeilToInt(i / itemsPerRow);
