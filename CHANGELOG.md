@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Scriptable Object Palette
 - Palette now can return a texture with all the colors
 - A way to use a Scriptable Object Palette to set colors of Unity components
+- PaletteSO has a custom editor with several features:
+  - import from texture, 
+  - export to texture or color preset, 
+  - merge or replace colors from another palette, 
+  - reduce number of colors, 
+  - sort colors by HSP
+- ColorLinkSO has a custom editor to select the linked color
 
 ## [1.1.3] - 2022-07-10
 ### Added

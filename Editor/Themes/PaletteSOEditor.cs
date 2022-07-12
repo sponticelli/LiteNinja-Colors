@@ -21,25 +21,30 @@ namespace LiteNinja.Colors.Editor.Themes
         private bool _merge;
         private bool _reduce;
         private int _numColorsToReduce ;
+        
+        private static Texture2D _paletteTexture;
 
         private PaletteSO _replacingPalette;
         private PaletteSO _mergingPalette;
+        
+        private const int itemsPerRow = 12;
 
         public override void OnInspectorGUI()
         {
             var palette = (PaletteSO)target;
 
             ShowPalette(palette);
-
-            //TODO Generate Palette with random
-            //TODO Modify (Tint, Shade, etc)
+            
             AddPalette(palette);
             ReplacePalette(palette);
             MergePalette(palette);
             SortPalette(palette);
             ReduceColors(palette);
-
             ExportPalette(palette);
+            
+            //TODO Generate Palette with random color
+            //TODO Modify (Tint, Shade, etc)
+            
             SavePalette(palette);
         }
 
@@ -223,7 +228,7 @@ namespace LiteNinja.Colors.Editor.Themes
             EditorGUILayout.LabelField("Palette", EditorStyles.boldLabel);
 
             var startingRect = GUILayoutUtility.GetLastRect();
-            if (PaletteSOEditorHelper.DrawColorPalette(palette, ref _selectedColorIndex, true))
+            if (PaletteSOEditorHelper.DrawColorPalette(palette, ref _selectedColorIndex, true, _paletteTexture))
             {
                 Repaint();
             }
@@ -241,23 +246,21 @@ namespace LiteNinja.Colors.Editor.Themes
         private Rect DrawSelectedColor(PaletteSO palette, Rect startingRect)
         {
             var selectedColor = palette[_selectedColorIndex];
-            var selectedColorRow = _selectedColorIndex / PaletteSOEditorHelper.itemsPerRow;
+            var selectedColorRow = _selectedColorIndex / itemsPerRow;
             var selectedColorColumn = selectedColorRow * EditorGUIUtility.singleLineHeight +
                                       EditorGUIUtility.singleLineHeight;
             var changeColorRect = new Rect(
-                startingRect.x + PaletteSOEditorHelper.itemsPerRow * EditorGUIUtility.singleLineHeight + 30 +
+                startingRect.x + itemsPerRow * EditorGUIUtility.singleLineHeight + 30 +
                 EditorGUIUtility.singleLineHeight,
                 startingRect.y + selectedColorColumn,
                 64,
                 EditorGUIUtility.singleLineHeight);
             EditorGUI.BeginChangeCheck();
             var newColor = EditorGUI.ColorField(changeColorRect, selectedColor);
-            if (EditorGUI.EndChangeCheck())
-            {
-                palette[_selectedColorIndex] = newColor;
-                palette.Invoke();
-                GameViewRepaint();
-            }
+            if (!EditorGUI.EndChangeCheck()) return changeColorRect;
+            palette[_selectedColorIndex] = newColor;
+            palette.Invoke();
+            GameViewRepaint();
 
             return changeColorRect;
         }

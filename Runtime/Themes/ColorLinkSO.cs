@@ -21,9 +21,25 @@ namespace LiteNinja.Colors.Themes
         
         private List<Action> _listeners = new();
 
-        public PaletteSO Palette => _palette;
+        public PaletteSO Palette
+        {
+            get => _palette;
+            set
+            {
+                _palette = value;
+                Invoke();
+            }
+        }
 
-        public int ColorIndex => _colorIndex;
+        public int ColorIndex
+        {
+            get => _colorIndex;
+            set
+            {
+                _colorIndex = value;
+                Invoke();
+            }
+        }
 
         public Color Color
         {
@@ -35,6 +51,12 @@ namespace LiteNinja.Colors.Themes
                     return _fallbackColor;
                 return _palette[_colorIndex];
             }
+        }
+        
+        public Color FallbackColor
+        {
+            get => _fallbackColor;
+            set => _fallbackColor = value;
         }
         
         public void AddListener(Action listener)
