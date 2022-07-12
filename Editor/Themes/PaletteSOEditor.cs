@@ -1,13 +1,10 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using LiteNinja.Colors.Extensions;
 using LiteNinja.Colors.Palettes;
-using LiteNinja.Colors.Spaces;
 using LiteNinja.Colors.Themes;
 using UnityEditor;
 using UnityEngine;
-using LiteNinja.Utils.Extensions;
 
 
 namespace LiteNinja.Colors.Editor.Themes
@@ -228,7 +225,7 @@ namespace LiteNinja.Colors.Editor.Themes
             EditorGUILayout.LabelField("Palette", EditorStyles.boldLabel);
 
             var startingRect = GUILayoutUtility.GetLastRect();
-            if (PaletteSOEditorHelper.DrawColorPalette(palette, ref _selectedColorIndex, true, _paletteTexture))
+            if (ThemeEditorHelper.DrawColorPalette(palette, ref _selectedColorIndex, true, _paletteTexture))
             {
                 Repaint();
             }
@@ -267,7 +264,7 @@ namespace LiteNinja.Colors.Editor.Themes
 
         private void DrawDeleteButton(PaletteSO palette, int x, int y)
         {
-            if (!PaletteSOEditorHelper.DrawDeleteButton(x, y)) return;
+            if (!ThemeEditorHelper.DrawDeleteButton(x, y)) return;
             palette.RemoveAt(_selectedColorIndex);
 
             if (_selectedColorIndex >= palette.Count)

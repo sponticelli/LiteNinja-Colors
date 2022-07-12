@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using LiteNinja.Colors.Themes;
 using UnityEditor;
 using UnityEngine;
@@ -11,6 +9,7 @@ namespace LiteNinja.Colors.Editor.Themes
     {
         private static Color _fallbackColor;
         private static Texture2D _paletteTexture;
+
 
         public override void OnInspectorGUI()
         {
@@ -40,13 +39,19 @@ namespace LiteNinja.Colors.Editor.Themes
         {
             var colorIndex = colorLink.ColorIndex;
             EditorGUILayout.LabelField("Linked Color");
-
-            if (PaletteSOEditorHelper.DrawColorPalette(colorLink.Palette, ref colorIndex, false, 
-                    _paletteTexture, 8,
+            var lastRect = GUILayoutUtility.GetLastRect();
+            if (ThemeEditorHelper.DrawColorPalette(colorLink.Palette, ref colorIndex, false,
+                    _paletteTexture, 10,
                     EditorGUIUtility.labelWidth))
             {
                 colorLink.ColorIndex = colorIndex;
+                PaletteSOEditor.GameViewRepaint();
             }
+
+            //Draw a rect for the color
+            var colorRect = new Rect(lastRect.x, lastRect.y + EditorGUIUtility.singleLineHeight,
+                EditorGUIUtility.labelWidth -20f, EditorGUIUtility.singleLineHeight);
+            EditorGUI.DrawRect(colorRect, colorLink.Color);
         }
 
 

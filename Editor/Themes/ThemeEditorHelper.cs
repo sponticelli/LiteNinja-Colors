@@ -6,17 +6,16 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Editor.Themes
 {
-    public class PaletteSOEditorHelper
+    public class ThemeEditorHelper
     {
-
-        
         private static GUIStyle _tempDrawTextureStyle;
         private static Texture2D _blackTexture;
         private static Texture2D _whiteTexture;
-        
+
         private static int _paletteTextureCachedHashCode;
 
-        public static bool DrawColorPalette(PaletteSO palette, ref int colorKey, bool drawNewColorButton, Texture2D paletteTexture, int itemsPerRow = 12, float indent =0f)
+        public static bool DrawColorPalette(PaletteSO palette, ref int colorKey, bool drawNewColorButton,
+            Texture2D paletteTexture, int itemsPerRow = 12, float indent = 0f)
         {
             if (palette == null)
             {
@@ -57,7 +56,7 @@ namespace LiteNinja.Colors.Editor.Themes
             var textureRect = new Rect(lastRect.x + indent, lastRect.y + lastRect.height, 0.0f, 0.0f);
             if (paletteTexture != null)
             {
-                textureRect = new Rect(lastRect.x +indent, lastRect.y + lastRect.height,
+                textureRect = new Rect(lastRect.x + indent, lastRect.y + lastRect.height,
                     paletteTexture.width * EditorGUIUtility.singleLineHeight,
                     paletteTexture.height * EditorGUIUtility.singleLineHeight);
                 heightOfPalette = textureRect.height;
@@ -117,15 +116,27 @@ namespace LiteNinja.Colors.Editor.Themes
             }
 
             if (palette.Count <= 0) return somethingHasChanged;
-            
-            DrawOnSelectedCell(colorKey, textureRect, itemsPerRow);
-            var selectedColorRow = colorKey / itemsPerRow;
+
+            var isInRange = colorKey >= 0 && colorKey < palette.Count;
+            if (isInRange)
+            {
+                DrawOnSelectedCell(colorKey, textureRect, itemsPerRow);
+            }
+
+            var selectedColorRow = (isInRange) ? colorKey / itemsPerRow : 0;
             var selectedColorY = selectedColorRow * EditorGUIUtility.singleLineHeight +
                                  EditorGUIUtility.singleLineHeight;
             var colorKeyRect =
-                new Rect(lastRect.x + indent + (1+itemsPerRow) * EditorGUIUtility.singleLineHeight,
+                new Rect(lastRect.x + indent + (1 + itemsPerRow) * EditorGUIUtility.singleLineHeight,
                     lastRect.y + selectedColorY, 64, EditorGUIUtility.singleLineHeight);
-            EditorGUI.LabelField(colorKeyRect, colorKey.ToString());
+            var guiStyle = new GUIStyle(EditorStyles.label);
+            if (!isInRange)
+            {
+                guiStyle.normal.textColor = Color.red;
+                guiStyle.fontStyle = FontStyle.Bold;
+            }
+            EditorGUI.LabelField(colorKeyRect, colorKey.ToString(), guiStyle);
+
 
             return somethingHasChanged;
         }
@@ -147,7 +158,7 @@ namespace LiteNinja.Colors.Editor.Themes
 
             var minusRect = new Rect(x + slhHalf - halfMinusLength, y + slhHalf, minusLength, 1);
             DrawRect(EditorGUIUtility.isProSkin ? _whiteTexture : _blackTexture, minusRect);
-  
+
             var clickRect = new Rect(x, y, slh, slh);
             return IsClick() && IsClickInRect(clickRect);
         }
@@ -250,18 +261,17 @@ namespace LiteNinja.Colors.Editor.Themes
         private static void DrawRect(Texture2D texture, Rect rect)
         {
             _tempDrawTextureStyle ??= new GUIStyle();
-
             _tempDrawTextureStyle.normal.background = texture;
             EditorGUI.LabelField(rect, "", _tempDrawTextureStyle);
         }
 
-        private static bool IsClick()
+        public static bool IsClick()
         {
             var e = Event.current;
-            return e != null && e.type == EventType.MouseDown && e.button == 0;
+            return e is { type: EventType.MouseDown, button: 0 };
         }
 
-        private static bool IsClickInRect(Rect rect)
+        public static bool IsClickInRect(Rect rect)
         {
             var e = Event.current;
             return e is { type: EventType.MouseDown, button: 0 } && rect.Contains(e.mousePosition);
@@ -280,7 +290,7 @@ namespace LiteNinja.Colors.Editor.Themes
             return tex;
         }
 
-        private static Texture2D TextureWithColors(IReadOnlyList<Color> colors, int itemsPerRow =12)
+        private static Texture2D TextureWithColors(IReadOnlyList<Color> colors, int itemsPerRow = 12)
         {
             if (colors == null || colors.Count == 0)
             {
