@@ -17,43 +17,48 @@ namespace LiteNinja.Colors.Editor.Themes
         private bool _replace;
         private bool _merge;
         private bool _reduce;
-        private int _numColorsToReduce ;
-        
+        private int _numColorsToReduce;
+
         private static Texture2D _paletteTexture;
 
         private PaletteSO _replacingPalette;
         private PaletteSO _mergingPalette;
-        
-        private const int itemsPerRow = 12;
+
+        private const int _itemsPerRow = 12;
+        private static EditorWindow _gameView;
 
         public override void OnInspectorGUI()
         {
             var palette = (PaletteSO)target;
 
             ShowPalette(palette);
-            
+
             AddPalette(palette);
             ReplacePalette(palette);
             MergePalette(palette);
             SortPalette(palette);
             ReduceColors(palette);
-            ExportPalette(palette);
-            
+            ExportPalette();
+
             //TODO Generate Palette with random color
             //TODO Modify (Tint, Shade, etc)
-            
+
             SavePalette(palette);
         }
 
-        private void ExportPalette(PaletteSO palette)
+        private static void ExportPalette()
         {
             EditorGUILayout.LabelField("Export", EditorStyles.boldLabel);
-            if (GUILayout.Button("Export To Color Preset")) {
+            if (GUILayout.Button("Export To Color Preset"))
+            {
                 PaletteMenu.SavePaletteToColorPreset();
             }
-            if (GUILayout.Button("Export To Texture")) {
+
+            if (GUILayout.Button("Export To Texture"))
+            {
                 PaletteMenu.SavePaletteToTexture();
             }
+
             EditorGUILayout.Space();
         }
 
@@ -62,13 +67,13 @@ namespace LiteNinja.Colors.Editor.Themes
             EditorGUILayout.LabelField("Reduce", EditorStyles.boldLabel);
             if (_reduce)
             {
-                if (_numColorsToReduce == 0) _numColorsToReduce = Mathf.Max(1, Mathf.RoundToInt( palette.Count *0.5f));
+                if (_numColorsToReduce == 0) _numColorsToReduce = Mathf.Max(1, Mathf.RoundToInt(palette.Count * 0.5f));
                 _numColorsToReduce = EditorGUILayout.IntSlider("Num Colors",
                     _numColorsToReduce, 1, palette.Count);
                 if (GUILayout.Button("Reduce"))
                 {
                     var colors = palette.GetAll().ToArray();
-                    colors = colors.Reduce( 0.02f).Reduce(_numColorsToReduce);
+                    colors = colors.Reduce(0.02f).Reduce(_numColorsToReduce);
                     palette.Clear();
                     palette.SetAll(colors);
                     palette.Invoke();
@@ -106,23 +111,18 @@ namespace LiteNinja.Colors.Editor.Themes
             _merge = !_merge;
         }
 
-        private void SortPalette(PaletteSO palette)
+        private static void SortPalette(PaletteSO palette)
         {
-            void Apply(PaletteSO paletteSo, Color[] sorted)
-            {
-                paletteSo.Clear();
-                paletteSo.AddRange(sorted);
-                paletteSo.Invoke();
-                GameViewRepaint();
-            }
-
             EditorGUILayout.LabelField("Sorting", EditorStyles.boldLabel);
 
             if (!GUILayout.Button("Sort")) return;
 
             var colors = palette.GetAll();
             var sorted = colors.ToArray().SortByHSP();
-            Apply(palette, sorted);
+            palette.Clear();
+            palette.AddRange(sorted);
+            palette.Invoke();
+            GameViewRepaint();
         }
 
         private void ReplacePalette(PaletteSO palette)
@@ -130,22 +130,18 @@ namespace LiteNinja.Colors.Editor.Themes
             EditorGUILayout.LabelField("Replace", EditorStyles.boldLabel);
             if (_replace)
             {
-                // Object Field
                 _replacingPalette = (PaletteSO)EditorGUILayout.ObjectField(_replacingPalette, typeof(PaletteSO), false);
-                // Confirm
                 EditorGUI.BeginDisabledGroup(_replacingPalette == null);
                 if (GUILayout.Button("Replace"))
                 {
                     palette.ReplaceFromPalette(_replacingPalette);
                     GameViewRepaint();
                     _replacingPalette = null;
-                    //replace = false;
                 }
 
                 EditorGUI.EndDisabledGroup();
             }
-
-            // Start & Cancel
+            
             if (GUILayout.Button(_replace ? "Cancel" : "Replace"))
             {
                 _replace = !_replace;
@@ -158,7 +154,12 @@ namespace LiteNinja.Colors.Editor.Themes
                 new[] { "Image files", "png,jpg,jpeg", });
             if (string.IsNullOrEmpty(path)) return;
 
-            var bytes = File.ReadAllBytes(path);
+            ReplacePaletteWithTextureFile(palette, path);
+        }
+
+        private static void ReplacePaletteWithTextureFile(PaletteSO palette, string textureFullPath)
+        {
+            var bytes = File.ReadAllBytes(textureFullPath);
             var tex = new Texture2D(2, 2);
             tex.LoadImage(bytes);
             var pixels = tex.GetPixels();
@@ -243,11 +244,11 @@ namespace LiteNinja.Colors.Editor.Themes
         private Rect DrawSelectedColor(PaletteSO palette, Rect startingRect)
         {
             var selectedColor = palette[_selectedColorIndex];
-            var selectedColorRow = _selectedColorIndex / itemsPerRow;
+            var selectedColorRow = _selectedColorIndex / _itemsPerRow;
             var selectedColorColumn = selectedColorRow * EditorGUIUtility.singleLineHeight +
                                       EditorGUIUtility.singleLineHeight;
             var changeColorRect = new Rect(
-                startingRect.x + itemsPerRow * EditorGUIUtility.singleLineHeight + 30 +
+                startingRect.x + _itemsPerRow * EditorGUIUtility.singleLineHeight + 30 +
                 EditorGUIUtility.singleLineHeight,
                 startingRect.y + selectedColorColumn,
                 64,
@@ -280,7 +281,7 @@ namespace LiteNinja.Colors.Editor.Themes
             GameViewRepaint();
         }
 
-        private static EditorWindow _gameView;
+        
 
         public static void GameViewRepaint()
         {

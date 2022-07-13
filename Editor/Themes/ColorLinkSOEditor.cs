@@ -28,14 +28,14 @@ namespace LiteNinja.Colors.Editor.Themes
             FallbackColor(colorLink);
         }
 
-        private void PaletteSOField(ColorLinkSO colorLink)
+        private static void PaletteSOField(ColorLinkSO colorLink)
         {
             colorLink.Palette =
                 (PaletteSO)EditorGUILayout.ObjectField("Palette", colorLink.Palette, typeof(PaletteSO), false);
             PaletteSOEditor.GameViewRepaint();
         }
 
-        private void LinkedColor(Rect position, ColorLinkSO colorLink)
+        private static void LinkedColor(Rect position, ColorLinkSO colorLink)
         {
             var colorIndex = colorLink.ColorIndex;
             EditorGUILayout.LabelField("Linked Color");
@@ -48,9 +48,14 @@ namespace LiteNinja.Colors.Editor.Themes
                 PaletteSOEditor.GameViewRepaint();
             }
 
+            DrawPreviewColor(colorLink, lastRect);
+        }
+
+        private static void DrawPreviewColor(ColorLinkSO colorLink, Rect lastRect)
+        {
             //Draw a rect for the color
             var colorRect = new Rect(lastRect.x, lastRect.y + EditorGUIUtility.singleLineHeight,
-                EditorGUIUtility.labelWidth -20f, EditorGUIUtility.singleLineHeight);
+                EditorGUIUtility.labelWidth - 20f, EditorGUIUtility.singleLineHeight);
             EditorGUI.DrawRect(colorRect, colorLink.Color);
         }
 

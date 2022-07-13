@@ -73,7 +73,7 @@ namespace LiteNinja.Colors.Editor.Themes
             AssetDatabase.ImportAsset(filePath);
         }
 
-        public static string ConvertAssetPathToFullPath(string assetPath)
+        private static string ConvertAssetPathToFullPath(string assetPath)
         {
             var fullPath = Application.dataPath + assetPath.Substring("Assets".Length);
             return fullPath;
