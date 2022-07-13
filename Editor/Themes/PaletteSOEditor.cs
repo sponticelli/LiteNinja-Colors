@@ -18,16 +18,16 @@ namespace LiteNinja.Colors.Editor.Themes
         private bool _merge;
         private bool _reduce;
         private bool _generate;
-        private int _numColorsToReduce;
+        private bool _modify;
 
         private static Texture2D _paletteTexture;
 
-        private PaletteSO _replacingPalette;
-        private PaletteSO _mergingPalette;
-
         private const int _itemsPerRow = 12;
         private static EditorWindow _gameView;
-        
+
+        private int _numColorsToReduce;
+        private PaletteSO _replacingPalette;
+        private PaletteSO _mergingPalette;
         private Color _seedColor = Color.white;
         private int _numColors = 16;
         private bool _replaceColors;
@@ -43,19 +43,64 @@ namespace LiteNinja.Colors.Editor.Themes
             ReplacePalette(palette);
             MergePalette(palette);
             GenerateHarmonies(palette);
+            ModifyPalette(palette);
             SortPalette(palette);
             ReduceColors(palette);
             ExportPalette();
 
-            
             //TODO Modify (Tint, Shade, etc)
 
             SavePalette(palette);
         }
 
+        private void ModifyPalette(PaletteSO palette)
+        {
+            EditorGUILayout.LabelField("Modify", EditorStyles.boldLabel);
+            if (_modify)
+            {
+                Saturate(palette);
+                Desaturate(palette);
+                EditorGUILayout.Space();
+                //TODO Lighten(palette);
+                //TODO Darken(palette);
+                EditorGUILayout.Space();
+                //TODO Invert(palette);
+                EditorGUILayout.Space();
+                //TODO Tint(palette);
+                //TODO Shade(palette);
+                //TODO Tone(palette);
+
+            }
+
+            if (!GUILayout.Button(_modify ? "Cancel" : "Modify")) return;
+            _modify = !_modify;
+        }
+
+        private void Desaturate(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Desaturate")) return;
+            for (var i = 0; i < palette.Count; i++)
+            {
+                palette[i] = palette[i].Desaturate();
+            };
+            palette.Invoke();
+            GameViewRepaint();
+        }
+
+        private void Saturate(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Saturate")) return;
+            for (var i = 0; i < palette.Count; i++)
+            {
+                palette[i] = palette[i].Saturate();
+            };
+            palette.Invoke();
+            GameViewRepaint();
+        }
+
         private void GenerateHarmonies(PaletteSO palette)
         {
-            EditorGUILayout.LabelField("Harmonies");
+            EditorGUILayout.LabelField("Harmonies", EditorStyles.boldLabel);
             if (_generate)
             {
                 //Draw a color picker for the color to generate
@@ -64,10 +109,10 @@ namespace LiteNinja.Colors.Editor.Themes
                 _numColors = EditorGUILayout.IntSlider("Num Colors", _numColors, 1, 256);
                 //Draw a checkbox for whether to replace colors or not
                 _replaceColors = EditorGUILayout.Toggle("Replace Colors", _replaceColors);
-                
+
                 //Add a space between the buttons
                 EditorGUILayout.Space();
-                
+
                 MonochromaticHarmony(palette);
                 AnalogousHarmony(palette);
                 ComplementaryHarmony(palette);
@@ -76,7 +121,7 @@ namespace LiteNinja.Colors.Editor.Themes
                 TriadicHarmony(palette);
                 TetradicHarmony(palette);
             }
-            
+
             if (!GUILayout.Button(_generate ? "Cancel" : "Harmonies")) return;
             _generate = !_generate;
         }
@@ -112,8 +157,8 @@ namespace LiteNinja.Colors.Editor.Themes
         private void ComplementaryHarmony(PaletteSO palette)
         {
             if (!GUILayout.Button("Complementary Harmony")) return;
-           var colors = _seedColor.RandomComplementaryHarmony(_numColors);
-           UpdatePaletteWithHarmony(palette, colors);
+            var colors = _seedColor.RandomComplementaryHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
         }
 
         private void AnalogousHarmony(PaletteSO palette)
@@ -238,7 +283,7 @@ namespace LiteNinja.Colors.Editor.Themes
 
                 EditorGUI.EndDisabledGroup();
             }
-            
+
             if (GUILayout.Button(_replace ? "Cancel" : "Replace"))
             {
                 _replace = !_replace;
@@ -378,7 +423,6 @@ namespace LiteNinja.Colors.Editor.Themes
             GameViewRepaint();
         }
 
-        
 
         public static void GameViewRepaint()
         {
