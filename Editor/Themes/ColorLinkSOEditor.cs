@@ -40,7 +40,7 @@ namespace LiteNinja.Colors.Editor.Themes
             var colorIndex = colorLink.ColorIndex;
             EditorGUILayout.LabelField("Linked Color");
             var lastRect = GUILayoutUtility.GetLastRect();
-            if (ThemeEditorHelper.DrawColorPalette(colorLink.Palette, ref colorIndex, false,
+            if (PaletteDrawingHelper.DrawColorPalette(colorLink.Palette, ref colorIndex, false,
                     _paletteTexture, 10,
                     EditorGUIUtility.labelWidth))
             {

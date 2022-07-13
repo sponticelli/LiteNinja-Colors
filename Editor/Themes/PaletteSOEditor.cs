@@ -226,7 +226,7 @@ namespace LiteNinja.Colors.Editor.Themes
             EditorGUILayout.LabelField("Palette", EditorStyles.boldLabel);
 
             var startingRect = GUILayoutUtility.GetLastRect();
-            if (ThemeEditorHelper.DrawColorPalette(palette, ref _selectedColorIndex, true, _paletteTexture))
+            if (PaletteDrawingHelper.DrawColorPalette(palette, ref _selectedColorIndex, true, _paletteTexture))
             {
                 Repaint();
             }
@@ -265,7 +265,7 @@ namespace LiteNinja.Colors.Editor.Themes
 
         private void DrawDeleteButton(PaletteSO palette, int x, int y)
         {
-            if (!ThemeEditorHelper.DrawDeleteButton(x, y)) return;
+            if (!PaletteDrawingHelper.DrawDeleteButton(x, y)) return;
             palette.RemoveAt(_selectedColorIndex);
 
             if (_selectedColorIndex >= palette.Count)

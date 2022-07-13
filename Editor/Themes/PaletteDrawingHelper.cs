@@ -6,11 +6,10 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Editor.Themes
 {
-    public class ThemeEditorHelper
+    public static class PaletteDrawingHelper
     {
-        private static GUIStyle _tempDrawTextureStyle;
-        private static Texture2D _blackTexture = TextureWithColor(Color.black);
-        private static Texture2D _whiteTexture = TextureWithColor(Color.white);
+        private static readonly Texture2D _blackTexture = CreateTexture(Color.black);
+        private static readonly Texture2D _whiteTexture = CreateTexture(Color.white);
 
         private static int _paletteTextureCachedHashCode;
 
@@ -24,7 +23,7 @@ namespace LiteNinja.Colors.Editor.Themes
 
             var lastRect = GUILayoutUtility.GetLastRect();
 
-            paletteTexture = CreatePaletteTexture(palette, paletteTexture, itemsPerRow);
+            paletteTexture = CreateTextureFromPalette(palette, paletteTexture, itemsPerRow);
             
             var numInBottomRow = palette.Count % itemsPerRow;
 
@@ -116,13 +115,13 @@ namespace LiteNinja.Colors.Editor.Themes
             return (textureRect, clickRect);
         }
 
-        private static Texture2D CreatePaletteTexture(PaletteSO palette, Texture2D paletteTexture, int itemsPerRow)
+        private static Texture2D CreateTextureFromPalette(PaletteSO palette, Texture2D paletteTexture, int itemsPerRow)
         {
             if (palette.Count > 0)
             {
                 var paletteHash = palette.Texture.GetHashCode();
                 if (paletteTexture != null && _paletteTextureCachedHashCode == paletteHash) return paletteTexture;
-                paletteTexture = TextureWithColors(palette.GetAll().ToArray(), itemsPerRow);
+                paletteTexture = CreateTexture(palette.GetAll().ToArray(), itemsPerRow);
                 _paletteTextureCachedHashCode = paletteHash;
             }
             else
@@ -163,10 +162,6 @@ namespace LiteNinja.Colors.Editor.Themes
         {
             var slh = (int)(EditorGUIUtility.singleLineHeight);
             var slhHalf = (int)(slh * 0.5f);
-            if (_blackTexture == null)
-            {
-                _blackTexture = TextureWithColor(Color.black);
-            }
 
             DrawBlock(x, y, 1, 1, 1, slh, _blackTexture);
             DrawBlock(x + 1, y + 1, 1, 1, 1, slh - 2, _whiteTexture);
@@ -274,9 +269,14 @@ namespace LiteNinja.Colors.Editor.Themes
 
         private static void DrawRect(Texture2D texture, Rect rect)
         {
-            _tempDrawTextureStyle ??= new GUIStyle();
-            _tempDrawTextureStyle.normal.background = texture;
-            EditorGUI.LabelField(rect, "", _tempDrawTextureStyle);
+            var guiStyle = new GUIStyle
+            {
+                normal =
+                {
+                    background = texture
+                }
+            };
+            EditorGUI.LabelField(rect, "", guiStyle);
         }
 
         private static bool IsClick()
@@ -291,7 +291,7 @@ namespace LiteNinja.Colors.Editor.Themes
             return e is { type: EventType.MouseDown, button: 0 } && rect.Contains(e.mousePosition);
         }
 
-        private static Texture2D TextureWithColor(Color color)
+        private static Texture2D CreateTexture(Color color)
         {
             var tex = new Texture2D(1, 1, TextureFormat.RGB24, false, true)
             {
@@ -304,7 +304,7 @@ namespace LiteNinja.Colors.Editor.Themes
             return tex;
         }
 
-        private static Texture2D TextureWithColors(IReadOnlyList<Color> colors, int itemsPerRow = 12)
+        private static Texture2D CreateTexture(IReadOnlyList<Color> colors, int itemsPerRow)
         {
             if (colors == null || colors.Count == 0)
             {
