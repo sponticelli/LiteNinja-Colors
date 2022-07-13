@@ -17,6 +17,7 @@ namespace LiteNinja.Colors.Editor.Themes
         private bool _replace;
         private bool _merge;
         private bool _reduce;
+        private bool _generate;
         private int _numColorsToReduce;
 
         private static Texture2D _paletteTexture;
@@ -26,6 +27,11 @@ namespace LiteNinja.Colors.Editor.Themes
 
         private const int _itemsPerRow = 12;
         private static EditorWindow _gameView;
+        
+        private Color _seedColor = Color.white;
+        private int _numColors = 16;
+        private bool _replaceColors;
+
 
         public override void OnInspectorGUI()
         {
@@ -36,14 +42,105 @@ namespace LiteNinja.Colors.Editor.Themes
             AddPalette(palette);
             ReplacePalette(palette);
             MergePalette(palette);
+            GenerateHarmonies(palette);
             SortPalette(palette);
             ReduceColors(palette);
             ExportPalette();
 
-            //TODO Generate Palette with random color
+            
             //TODO Modify (Tint, Shade, etc)
 
             SavePalette(palette);
+        }
+
+        private void GenerateHarmonies(PaletteSO palette)
+        {
+            EditorGUILayout.LabelField("Harmonies");
+            if (_generate)
+            {
+                //Draw a color picker for the color to generate
+                _seedColor = EditorGUILayout.ColorField("Color", _seedColor);
+                //Draw a slider for the number of colors to generate
+                _numColors = EditorGUILayout.IntSlider("Num Colors", _numColors, 1, 256);
+                //Draw a checkbox for whether to replace colors or not
+                _replaceColors = EditorGUILayout.Toggle("Replace Colors", _replaceColors);
+                
+                //Add a space between the buttons
+                EditorGUILayout.Space();
+                
+                MonochromaticHarmony(palette);
+                AnalogousHarmony(palette);
+                ComplementaryHarmony(palette);
+                SplitComplementaryHarmony(palette);
+                DoubleSplitComplementaryHarmony(palette);
+                TriadicHarmony(palette);
+                TetradicHarmony(palette);
+            }
+            
+            if (!GUILayout.Button(_generate ? "Cancel" : "Harmonies")) return;
+            _generate = !_generate;
+        }
+
+        private void TetradicHarmony(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Tetradic Harmony")) return;
+            var colors = _seedColor.RandomTetradicHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void TriadicHarmony(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Triadic Harmony")) return;
+            var colors = _seedColor.RandomTriadicHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void DoubleSplitComplementaryHarmony(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Double Split Complementary Harmony")) return;
+            var colors = _seedColor.RandomDoubleSplitComplementaryHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void SplitComplementaryHarmony(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Split Complementary Harmony")) return;
+            var colors = _seedColor.RandomSplitComplementaryHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void ComplementaryHarmony(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Complementary Harmony")) return;
+           var colors = _seedColor.RandomComplementaryHarmony(_numColors);
+           UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void AnalogousHarmony(PaletteSO palette)
+        {
+            if (!GUILayout.Button("Analogous Harmony")) return;
+            var colors = _seedColor.RandomAnalogousHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void MonochromaticHarmony(PaletteSO palette)
+        {
+            //Add a button to generate the monochromatic harmony
+            if (!GUILayout.Button("Monochromatic Harmony")) return;
+            var colors = _seedColor.RandomMonochromaticHarmony(_numColors);
+            UpdatePaletteWithHarmony(palette, colors);
+        }
+
+        private void UpdatePaletteWithHarmony(PaletteSO palette, Color[] colors)
+        {
+            if (_replaceColors)
+            {
+                palette.Clear();
+            }
+
+            palette.AddRange(colors.SortByHSP());
+            palette.Invoke();
+            GameViewRepaint();
         }
 
         private static void ExportPalette()

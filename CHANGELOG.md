@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - merge or replace colors from another palette, 
   - reduce number of colors, 
   - sort colors by HSP
+  - generate palette from harmonies
 - ColorLinkSO has a custom editor to select the linked color
 
 ## [1.1.3] - 2022-07-10

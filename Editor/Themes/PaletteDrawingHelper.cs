@@ -24,7 +24,7 @@ namespace LiteNinja.Colors.Editor.Themes
             var lastRect = GUILayoutUtility.GetLastRect();
 
             paletteTexture = CreateTextureFromPalette(palette, paletteTexture, itemsPerRow);
-            
+
             var numInBottomRow = palette.Count % itemsPerRow;
 
             Rect textureRect;
@@ -46,7 +46,7 @@ namespace LiteNinja.Colors.Editor.Themes
             return somethingHasChanged;
         }
 
-        private static (bool, int clickedOnKey) ClickOnPalette(PaletteSO palette, int previousKey, 
+        private static (bool, int clickedOnKey) ClickOnPalette(PaletteSO palette, int previousKey,
             Texture2D paletteTexture, Rect clickRect,
             Rect textureRect)
         {
@@ -87,7 +87,8 @@ namespace LiteNinja.Colors.Editor.Themes
             }
         }
 
-        private static (Rect, Rect) CalcTextureRect(PaletteSO palette, Texture2D paletteTexture, float indent, Rect lastRect,
+        private static (Rect, Rect) CalcTextureRect(PaletteSO palette, Texture2D paletteTexture, float indent,
+            Rect lastRect,
             int numInBottomRow)
         {
             float heightOfPalette = 0;
@@ -184,18 +185,19 @@ namespace LiteNinja.Colors.Editor.Themes
                 return;
             }
 
-            
+
             var currentRect = new Rect(startingPointX, startingPointY, 1, cellSize * cellsY);
             var fullHeight = cellSize * cellsY + 1; // +1 to get the corners
             var oneLessHeight = cellSize * (cellsY - 1) + 1;
-            
+
             if (cellsY == 1)
             {
                 oneLessHeight = 0;
             }
 
             var numInBottomRow = numColors % cellsX;
-            DrawVerticalLines(startingPointX, cellsX, cellSize, colorTexture, currentRect, numInBottomRow, fullHeight, oneLessHeight);
+            DrawVerticalLines(startingPointX, cellsX, cellSize, colorTexture, currentRect, numInBottomRow, fullHeight,
+                oneLessHeight);
 
             // draw horizontal lines
             currentRect.x = startingPointX;

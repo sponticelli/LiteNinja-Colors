@@ -443,8 +443,8 @@ namespace LiteNinja.Colors.Extensions
         {
             for (var i = 0; i < colors.Length; i++)
             {
-                var percent = UnityEngine.Random.Range(-1f, 1f) * variance;
-                var rng = UnityEngine.Random.Range(min, max);
+                var percent = Random.Range(-1f, 1f) * variance;
+                var rng = Random.Range(min, max);
 
                 var color = rng switch
                 {
@@ -483,8 +483,8 @@ namespace LiteNinja.Colors.Extensions
         {
             for (var i = 0; i < colors.Length; i++)
             {
-                var percent = UnityEngine.Random.Range(-1f, 1f) * variance;
-                var rng = UnityEngine.Random.Range(min, max);
+                var percent = Random.Range(-1f, 1f) * variance;
+                var rng = Random.Range(min, max);
 
                 var color = rng switch
                 {
