@@ -70,7 +70,7 @@ namespace LiteNinja.Colors.Editor.Themes
                 Tint(palette);
                 Shade(palette);
                 Tone(palette);
-
+                EditorGUILayout.Space();
             }
 
             if (!GUILayout.Button(_modify ? "Cancel" : "Modify")) return;

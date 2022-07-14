@@ -1,4 +1,3 @@
-using System;
 using LiteNinja_Colors.Runtime;
 using UnityEngine;
 

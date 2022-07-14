@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace LiteNinja.Colors.Themes
@@ -6,24 +5,27 @@ namespace LiteNinja.Colors.Themes
     public abstract class AColorize : MonoBehaviour
     {
         [SerializeField]
-        private ColorLinkSO _colorLink;
-
-        private void OnDisable()
+        protected ColorLinkSO _colorLink;
+        
+        protected void OnDisable()
         {
             _colorLink.RemoveListener(OnColorChanged); 
         }
         
-        private void OnEnable()
+        protected void OnEnable()
         {
+            AttachComponent();
             _colorLink.AddListener(OnColorChanged); 
         }
 
-        private void OnValidate()
+        protected void OnValidate()
         {
+            AttachComponent();
             _colorLink?.AddListener(OnColorChanged);
             OnColorChanged();
         }
 
         protected abstract void OnColorChanged();
+        protected abstract void AttachComponent();
     }
 }

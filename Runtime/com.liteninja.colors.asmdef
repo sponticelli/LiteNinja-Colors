@@ -2,7 +2,8 @@
     "name": "com.liteninja.colors",
     "rootNamespace": "",
     "references": [
-        "GUID:9a9ef198d65ed438b94bff7d160afb89"
+        "GUID:9a9ef198d65ed438b94bff7d160afb89",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
