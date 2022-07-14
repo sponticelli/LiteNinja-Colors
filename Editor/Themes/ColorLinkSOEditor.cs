@@ -7,13 +7,16 @@ namespace LiteNinja.Colors.Editor.Themes
     [CustomEditor(typeof(ColorLinkSO))]
     public class ColorLinkSOEditor : UnityEditor.Editor
     {
-        private static Color _fallbackColor;
-        private static Texture2D _paletteTexture;
+        private  Color _fallbackColor;
+        private  Texture2D _paletteTexture;
+        private  PaletteSO _paletteSO;
 
 
         public override void OnInspectorGUI()
         {
             var colorLink = (ColorLinkSO)target;
+            _paletteSO = colorLink.Palette;
+            _fallbackColor = colorLink.FallbackColor;
 
             EditorGUILayout.LabelField("Color Link", EditorStyles.boldLabel);
 
@@ -28,14 +31,16 @@ namespace LiteNinja.Colors.Editor.Themes
             FallbackColor(colorLink);
         }
 
-        private static void PaletteSOField(ColorLinkSO colorLink)
+        private void PaletteSOField(ColorLinkSO colorLink)
         {
-            colorLink.Palette =
-                (PaletteSO)EditorGUILayout.ObjectField("Palette", colorLink.Palette, typeof(PaletteSO), false);
+            _paletteSO =
+                (PaletteSO)EditorGUILayout.ObjectField("Palette", _paletteSO, typeof(PaletteSO), false);
+            colorLink.Palette = _paletteSO;
             PaletteSOEditor.GameViewRepaint();
+            EditorUtility.SetDirty(colorLink);
         }
 
-        private static void LinkedColor(Rect position, ColorLinkSO colorLink)
+        private void LinkedColor(Rect position, ColorLinkSO colorLink)
         {
             var colorIndex = colorLink.ColorIndex;
             EditorGUILayout.LabelField("Linked Color");
@@ -49,9 +54,10 @@ namespace LiteNinja.Colors.Editor.Themes
             }
 
             DrawPreviewColor(colorLink, lastRect);
+            EditorUtility.SetDirty(colorLink);
         }
 
-        private static void DrawPreviewColor(ColorLinkSO colorLink, Rect lastRect)
+        private void DrawPreviewColor(ColorLinkSO colorLink, Rect lastRect)
         {
             //Draw a rect for the color
             var colorRect = new Rect(lastRect.x, lastRect.y + EditorGUIUtility.singleLineHeight,
@@ -60,10 +66,11 @@ namespace LiteNinja.Colors.Editor.Themes
         }
 
 
-        private static void FallbackColor(ColorLinkSO colorLink)
+        private void FallbackColor(ColorLinkSO colorLink)
         {
             colorLink.FallbackColor = EditorGUILayout.ColorField("Fallback Color: ", colorLink.FallbackColor);
             PaletteSOEditor.GameViewRepaint();
+            EditorUtility.SetDirty(colorLink);
         }
     }
 }
