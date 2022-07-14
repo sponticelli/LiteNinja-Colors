@@ -6,7 +6,7 @@ namespace LiteNinja.Colors.Themes.Colorizers
     {
         protected override void OnColorChanged()
         {
-            if (!_component) return;
+            if (!_component || !_colorLink) return;
             var componentMain = _component.main;
             componentMain.startColor = _colorLink.Color;
         }

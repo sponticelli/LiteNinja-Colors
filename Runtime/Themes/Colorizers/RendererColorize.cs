@@ -8,7 +8,7 @@ namespace LiteNinja.Colors.Themes.Colorizers
         private int _colorShaderId;
         protected override void OnColorChanged()
         {
-            if (!_component) return;
+            if (!_component || !_colorLink) return;
             _materialPropertyBlock?.SetColor(_colorShaderId, _colorLink.Color);
         }
 
