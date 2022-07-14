@@ -6,9 +6,9 @@ namespace LiteNinja.Colors.Themes.Colorizers
     {
         protected override void OnColorChanged()
         {
-            if (!_component || !_colorLink) return;
+            if (!_component ) return;
             var componentMain = _component.main;
-            componentMain.startColor = _colorLink.Color;
+            componentMain.startColor = _colorLink ? _colorLink.Color : Color.magenta;;
         }
     }
 }

@@ -6,8 +6,8 @@ namespace LiteNinja.Colors.Themes.Colorizers
     {
         protected override void OnColorChanged()
         {
-            if (!_component || !_colorLink) return;
-            _component.backgroundColor = _colorLink.Color;
+            if (!_component ) return;
+            _component.backgroundColor = _colorLink ? _colorLink.Color : Color.magenta;;
         }
     }
 }

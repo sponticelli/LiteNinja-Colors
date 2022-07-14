@@ -8,8 +8,8 @@ namespace LiteNinja.Colors.Themes.Colorizers
         private int _colorShaderId;
         protected override void OnColorChanged()
         {
-            if (!_component || !_colorLink) return;
-            _materialPropertyBlock?.SetColor(_colorShaderId, _colorLink.Color);
+            if (!_component) return;
+            _materialPropertyBlock?.SetColor(_colorShaderId, _colorLink ? _colorLink.Color : Color.magenta);
         }
 
         protected override void AttachComponent()
@@ -22,7 +22,7 @@ namespace LiteNinja.Colors.Themes.Colorizers
                 _colorShaderId = Shader.PropertyToID("_Color");
             }
 
-            _materialPropertyBlock.SetColor(_colorShaderId, _colorLink.Color);
+            _materialPropertyBlock.SetColor(_colorShaderId, _colorLink ? _colorLink.Color : Color.magenta);
             _component.SetPropertyBlock(_materialPropertyBlock);
         }
     }
