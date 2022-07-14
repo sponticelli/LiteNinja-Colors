@@ -17,7 +17,7 @@ namespace LiteNinja.Colors.Themes
         [SerializeField]
         private int _colorIndex;
         [SerializeField]
-        private Color _fallbackColor;
+        private Color _fallbackColor = Color.magenta;
         
         private List<Action> _listeners = new();
 
