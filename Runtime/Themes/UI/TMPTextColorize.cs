@@ -8,7 +8,7 @@ namespace LiteNinja.Colors.Themes.UI
         
         protected override void OnColorChanged()
         {
-            if (_component) return;
+            if (!_component) return;
             _component.color = _colorLink.Color;
         }
         

@@ -18,12 +18,6 @@ namespace LiteNinja.Colors.Editor.Themes
         #endregion        
         
         #region Texture
-        [MenuItem(_createPaletteFromTexture, true)]
-        private static bool CreatePaletteFromTextureValidate()
-        {
-            return SelectionIsPaletteSO();
-        }
-
         [MenuItem(_createPaletteFromTexture)]
         private static void CreatePaletteFromTexture()
         {
