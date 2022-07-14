@@ -18,7 +18,6 @@ namespace LiteNinja.Colors.Themes
         private int _colorIndex;
         [SerializeField]
         private Color _fallbackColor = Color.magenta;
-        
         private List<Action> _listeners = new();
 
         public PaletteSO Palette
