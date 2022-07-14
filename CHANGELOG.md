@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.2.1] - 2022-07-14
+### Added 
+- Menu to duplicate a PaletteSO
+- Menu to create a PaletteSO from an image
+
+### Changed
+- Using const string to define menu items
+
 ## [1.2.0] - 2022-07-14
 ### Added
 - Range of colors to a palette

@@ -7,33 +7,70 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Editor.Themes
 {
-    public static class PaletteMenu
+    public static class PaletteSOMenu
     {
-        [MenuItem("LiteNinja/Colors/Themes/Save Palette To Texture")]
+        #region Menu strings
+        private const string _menuPath = "LiteNinja/Colors/Themes/";
+        private const string _savePaletteToTexture = _menuPath + "Save Palette To Texture";
+        private const string _createPaletteFromTexture = _menuPath + "Create Palette from Texture";
+        private const string _savePaletteToSwatch = _menuPath + "Save Palette To Swatch";
+        private const string _duplicatePalette = _menuPath + "Duplicate Palette";
+        #endregion        
+        
+        #region Texture
+        [MenuItem(_createPaletteFromTexture, true)]
+        private static bool CreatePaletteFromTextureValidate()
+        {
+            return SelectionIsPaletteSO();
+        }
+
+        [MenuItem(_createPaletteFromTexture)]
+        private static void CreatePaletteFromTexture()
+        {
+            var path = EditorUtility.OpenFilePanelWithFilters("Import Texture", "",
+                new[] { "Image files", "png,jpg,jpeg", });
+            if (string.IsNullOrEmpty(path)) return;
+            
+            var bytes = File.ReadAllBytes(path);
+            var tex = new Texture2D(2, 2);
+            tex.LoadImage(bytes);
+            var colors = tex.GetPixels();
+            if (colors is not { Length: > 0 }) return;
+            colors = colors.Reduce(256);
+            
+            var palette = ScriptableObject.CreateInstance<PaletteSO>();
+            palette.AddRange(colors);
+            ProjectWindowUtil.CreateAsset(palette,  "PaletteSO.asset");
+            AssetDatabase.SaveAssets();
+        }
+        
+        
+        [MenuItem(_savePaletteToTexture, true)]
+        private static bool SavePaletteToTextureValidate()
+        {
+            return SelectionIsPaletteSO();
+        }
+        
+        [MenuItem(_savePaletteToTexture)]
         public static void SavePaletteToTexture()
         {
-            if (Selection.activeObject == null)
-            {
-                Debug.LogError("No palette selected");
-                return;
-            }
-
-            //Check if the selected object is a palette
-            if (Selection.activeObject is not PaletteSO)
-            {
-                Debug.LogError("Selected object is not a palette");
-                return;
-            }
-
             var palette = (PaletteSO)Selection.activeObject;
             var assetLocation = GetSelectedPath() + "/" + GetSelectedFileName() + ".png";
             var saveLocation = ConvertAssetPathToFullPath(assetLocation);
             palette.SaveToTexture(saveLocation);
             AssetDatabase.ImportAsset(assetLocation);
         }
+        #endregion
 
-        [MenuItem("LiteNinja/Colors/Themes/Save Palette To Color Preset Library", true)]
-        public static void SavePaletteToColorPreset()
+        #region Swatch
+        [MenuItem(_savePaletteToSwatch, true)]
+        public static bool SavePaletteToSwatchValidate()
+        {
+            return SelectionIsPaletteSO();
+        }
+
+        [MenuItem(_savePaletteToSwatch)]
+        public static void SavePaletteToSwatch()
         {
             if (Selection.activeObject == null)
             {
@@ -72,7 +109,33 @@ namespace LiteNinja.Colors.Editor.Themes
             File.WriteAllText(fullFilePath, fileText);
             AssetDatabase.ImportAsset(filePath);
         }
+        
+        #endregion
+        
+        #region Duplicate
 
+        [MenuItem(_duplicatePalette, true)]
+        private static bool DuplicatePaletteValidate()
+        {
+            return SelectionIsPaletteSO();
+        }
+
+        [MenuItem(_duplicatePalette)]
+        private static void DuplicatePalette()
+        {
+            var palette = (PaletteSO)Selection.activeObject;
+            var newPalette = ScriptableObject.CreateInstance<PaletteSO>();
+            newPalette.AddFromPalette(palette);
+            ProjectWindowUtil.CreateAsset(newPalette, palette.name + ".asset");
+            AssetDatabase.SaveAssets();
+        }
+        #endregion
+
+        #region Private utilities
+        private static bool SelectionIsPaletteSO()
+        {
+            return Selection.activeObject != null && Selection.activeObject is PaletteSO;
+        }
         private static string ConvertAssetPathToFullPath(string assetPath)
         {
             var fullPath = Application.dataPath + assetPath.Substring("Assets".Length);
@@ -98,5 +161,6 @@ namespace LiteNinja.Colors.Editor.Themes
 
             return path;
         }
+        #endregion
     }
 }

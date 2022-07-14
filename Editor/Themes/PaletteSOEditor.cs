@@ -221,14 +221,14 @@ namespace LiteNinja.Colors.Editor.Themes
         private static void ExportPalette()
         {
             EditorGUILayout.LabelField("Export", EditorStyles.boldLabel);
-            if (GUILayout.Button("Export To Color Preset"))
+            if (GUILayout.Button("Export To Swatch"))
             {
-                PaletteMenu.SavePaletteToColorPreset();
+                PaletteSOMenu.SavePaletteToSwatch();
             }
 
             if (GUILayout.Button("Export To Texture"))
             {
-                PaletteMenu.SavePaletteToTexture();
+                PaletteSOMenu.SavePaletteToTexture();
             }
 
             EditorGUILayout.Space();
