@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using LiteNinja.Colors.Extensions;
@@ -61,14 +62,14 @@ namespace LiteNinja.Colors.Editor.Themes
                 Saturate(palette);
                 Desaturate(palette);
                 EditorGUILayout.Space();
-                //TODO Lighten(palette);
-                //TODO Darken(palette);
+                Lighten(palette);
+                Darken(palette);
                 EditorGUILayout.Space();
-                //TODO Invert(palette);
+                Invert(palette);
                 EditorGUILayout.Space();
-                //TODO Tint(palette);
-                //TODO Shade(palette);
-                //TODO Tone(palette);
+                Tint(palette);
+                Shade(palette);
+                Tone(palette);
 
             }
 
@@ -76,23 +77,52 @@ namespace LiteNinja.Colors.Editor.Themes
             _modify = !_modify;
         }
 
-        private void Desaturate(PaletteSO palette)
+        private static void Tone(PaletteSO palette)
         {
-            if (!GUILayout.Button("Desaturate")) return;
-            for (var i = 0; i < palette.Count; i++)
-            {
-                palette[i] = palette[i].Desaturate();
-            };
-            palette.Invoke();
-            GameViewRepaint();
+            Modify(palette, "Tone", color => color.Tone());
         }
 
-        private void Saturate(PaletteSO palette)
+        private static void Shade(PaletteSO palette)
         {
-            if (!GUILayout.Button("Saturate")) return;
+            Modify(palette, "Shade", color => color.Shade());
+        }
+
+        private static void Tint(PaletteSO palette)
+        {
+            Modify(palette, "Tint", color => color.Tint());
+        }
+
+        private static void Invert(PaletteSO palette)
+        {
+            Modify(palette, "Invert", color => color.Invert());
+        }
+
+        private static void Darken(PaletteSO palette)
+        {
+            Modify(palette, "Darken", color => color.Darken());
+        }
+
+        private static void Lighten(PaletteSO palette)
+        {
+            Modify(palette, "Lighten", color => color.Lighten());
+        }
+
+        private static void Desaturate(PaletteSO palette)
+        {
+            Modify(palette, "Desaturate", color => color.Desaturate());
+        }
+
+        private static void Saturate(PaletteSO palette)
+        {
+            Modify(palette, "Saturate", color => color.Saturate());
+        }
+
+        private static void Modify(PaletteSO palette, string buttonLabel, Func<Color, Color> operation)
+        {
+            if (!GUILayout.Button(buttonLabel)) return;
             for (var i = 0; i < palette.Count; i++)
             {
-                palette[i] = palette[i].Saturate();
+                palette[i] = operation(palette[i]);
             };
             palette.Invoke();
             GameViewRepaint();
