@@ -3,18 +3,14 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Themes.UI
 {
-    public class TMPTextColorize : AColorize
+    public class TMPTextColorize : AColorize<TMP_Text>
     {
-        [SerializeField] private TMP_Text _text;
+        
         protected override void OnColorChanged()
         {
-            if (_text) _text.color = _colorLink.Color;
+            if (_component) return;
+            _component.color = _colorLink.Color;
         }
-
-        protected override void AttachComponent()
-        {
-            if (!_text)
-                _text = GetComponent<TMP_Text>();
-        }
+        
     }
 }

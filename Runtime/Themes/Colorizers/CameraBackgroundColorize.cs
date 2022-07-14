@@ -2,21 +2,12 @@ using UnityEngine;
 
 namespace LiteNinja.Colors.Themes.Colorizers
 {
-    public class CameraBackgroundColorize : AColorize
+    public class CameraBackgroundColorize : AColorize<Camera>
     {
-        [SerializeField] private Camera _camera;
-        
-        
         protected override void OnColorChanged()
         {
-            if (_camera)
-                _camera.backgroundColor = _colorLink.Color;
-        }
-
-        protected override void AttachComponent()
-        {
-            if (!_camera)
-                _camera = GetComponent<Camera>();
+            if (!_component) return;
+            _component.backgroundColor = _colorLink.Color;
         }
     }
 }
