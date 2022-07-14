@@ -10,7 +10,7 @@ namespace LiteNinja.Colors.Themes
     /// </summary>
     [CreateAssetMenu(menuName = "LiteNinja/Colors/Themes/ColorLink", fileName = "ColorLinkSO", order = 0)]
     [Serializable]
-    public class ColorLinkSO : ScriptableObject, ISerializationCallbackReceiver
+    public class ColorLinkSO : ScriptableObject
     {
         [SerializeField]
         private PaletteSO _palette;
@@ -91,14 +91,6 @@ namespace LiteNinja.Colors.Themes
                 _palette.RemoveListener(Invoke);
         }
         
-        public void OnBeforeSerialize()
-        {
-        }
-
-        public void OnAfterDeserialize()
-        {
-            _listeners = new List<Action>();
-        }
 
         public void OnValidate()
         {

@@ -118,7 +118,6 @@ namespace LiteNinja.Colors.Palettes
         {
             if (_colors.Count > 0)
             {
-                Debug.Log(_colors.Count);
                 _texture = new Texture2D(_colors.Count, 1)
                 {
                     filterMode = FilterMode.Point
