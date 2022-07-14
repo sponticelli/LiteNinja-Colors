@@ -9,7 +9,6 @@ namespace LiteNinja.Colors.Palettes
     /// </summary>
     public interface IPalette
     {
-
         /// <summary>
         /// Returns the number of colors in the palette
         /// </summary>
@@ -42,7 +41,7 @@ namespace LiteNinja.Colors.Palettes
         /// </summary>
         /// <param name="color">The color to add.</param>
         void Add(Color color);
-        
+
         /// <summary>
         /// Adds colors to the palette.
         /// </summary>
@@ -58,23 +57,27 @@ namespace LiteNinja.Colors.Palettes
         /// Removes the color at the specified index.
         /// </summary>
         public void RemoveAt(int index);
-        
-        public  void Clear();
-        
+
+        public void Clear();
+
         /// <summary>
         /// Replace the colors with the colors of another palette.
         /// </summary>
         void ReplaceFromPalette(IPalette palette);
-        
+
         /// <summary>
         /// Add colors from another palette to the end of the current palette.
         /// </summary>
         void AddFromPalette(IPalette palette);
 
         bool Contains(Color color);
-        
+
         void AddListener(Action listener);
         void RemoveListener(Action listener);
-        
+
+#if UNITY_EDITOR
+        string GetColorName(int index);
+        void SetColorName(int index, string name);
+#endif
     }
 }

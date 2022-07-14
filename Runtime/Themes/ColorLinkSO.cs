@@ -12,12 +12,9 @@ namespace LiteNinja.Colors.Themes
     [Serializable]
     public class ColorLinkSO : ScriptableObject
     {
-        [SerializeField]
-        private PaletteSO _palette;
-        [SerializeField]
-        private int _colorIndex;
-        [SerializeField]
-        private Color _fallbackColor = Color.magenta;
+        [SerializeField] private PaletteSO _palette;
+        [SerializeField] private int _colorIndex;
+        [SerializeField] private Color _fallbackColor = Color.magenta;
         private List<Action> _listeners = new();
 
         public PaletteSO Palette
@@ -46,30 +43,34 @@ namespace LiteNinja.Colors.Themes
             {
                 if (_palette == null)
                     return _fallbackColor;
-                if (_colorIndex< 0 || _colorIndex >= _palette.Count)
+                if (_colorIndex < 0 || _colorIndex >= _palette.Count)
                     return _fallbackColor;
                 return _palette[_colorIndex];
             }
         }
-        
+
+#if UNITY_EDITOR
+        public string ColorName => _palette == null ? "" : _palette.GetColorName(_colorIndex);
+#endif
+
         public Color FallbackColor
         {
             get => _fallbackColor;
             set => _fallbackColor = value;
         }
-        
+
         public void AddListener(Action listener)
         {
             if (_listeners.Contains(listener))
                 return;
             _listeners.Add(listener);
         }
-        
+
         public void RemoveListener(Action listener)
         {
             _listeners.Remove(listener);
         }
-        
+
         public void Invoke()
         {
             foreach (var listener in _listeners)
@@ -83,13 +84,13 @@ namespace LiteNinja.Colors.Themes
             if (_palette == null) return;
             _palette.AddListener(Invoke);
         }
-        
+
         public void OnDisable()
         {
             if (_palette != null)
                 _palette.RemoveListener(Invoke);
         }
-        
+
 
         public void OnValidate()
         {

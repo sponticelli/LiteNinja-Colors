@@ -9,22 +9,21 @@ namespace LiteNinja.Colors.Themes
     [Serializable]
     public class PaletteSO : ScriptableObject, IPalette, ISerializationCallbackReceiver
     {
-        [SerializeField]
-        private Palette _palette = new();
-        
+        [SerializeField] private Palette _palette = new();
+
         private List<Action> _listeners = new();
         public int Count => _palette.Count;
 
         public Color this[int index]
         {
             get => _palette[index];
-            set  {
+            set
+            {
                 _palette[index] = value;
                 Invoke();
             }
         }
 
-        
 
         public void SetAll(IEnumerable<Color> colors)
         {
@@ -36,7 +35,7 @@ namespace LiteNinja.Colors.Themes
         {
             return _palette.GetAll();
         }
-        
+
         public bool Contains(Color color)
         {
             return _palette.Contains(color);
@@ -94,17 +93,29 @@ namespace LiteNinja.Colors.Themes
             _listeners.Remove(listener);
         }
 
+#if UNITY_EDITOR
+        public string GetColorName(int index)
+        {
+            return _palette.GetColorName(index);
+        }
+
+        public void SetColorName(int index, string name)
+        {
+            _palette.SetColorName(index, name);
+        }
+#endif
+
         public Texture2D Texture => _palette.Texture;
+
         public void OnBeforeSerialize()
         {
-            
         }
 
         public void OnAfterDeserialize()
         {
             Invoke();
         }
-        
+
         public void Invoke()
         {
             foreach (var listener in _listeners)

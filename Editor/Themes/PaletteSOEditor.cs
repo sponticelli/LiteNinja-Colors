@@ -20,6 +20,7 @@ namespace LiteNinja.Colors.Editor.Themes
         private bool _reduce;
         private bool _generate;
         private bool _modify;
+        private bool _colorNames = true;
 
         private static Texture2D _paletteTexture;
 
@@ -39,7 +40,8 @@ namespace LiteNinja.Colors.Editor.Themes
             var palette = (PaletteSO)target;
 
             ShowPalette(palette);
-
+            ColorNames(palette);
+            EditorGUILayout.Space();
             AddPalette(palette);
             ReplacePalette(palette);
             MergePalette(palette);
@@ -49,9 +51,26 @@ namespace LiteNinja.Colors.Editor.Themes
             ReduceColors(palette);
             ExportPalette();
 
-            //TODO Modify (Tint, Shade, etc)
-
             SavePalette(palette);
+        }
+
+        private void ColorNames(PaletteSO palette)
+        {
+            EditorGUILayout.LabelField("Color Names", EditorStyles.boldLabel);
+            if (_colorNames)
+            {
+                //For each color add a text field for the name
+                for (var i = 0; i < palette.Count; i++)
+                {
+                    var name = EditorGUILayout.TextField($"{i}", palette.GetColorName(i));
+                    if (name != palette.GetColorName(i))
+                    {
+                        palette.SetColorName(i, name);
+                    }
+                }
+            }
+            if (!GUILayout.Button(_colorNames ? "Hide" : "Show names")) return;
+            _colorNames = !_colorNames;
         }
 
         private void ModifyPalette(PaletteSO palette)
@@ -396,8 +415,14 @@ namespace LiteNinja.Colors.Editor.Themes
         private void ShowPalette(PaletteSO palette)
         {
             EditorGUILayout.LabelField("Palette", EditorStyles.boldLabel);
-
+            //Display a label with the current color name if not null and not empty
+            var currentColorName = palette.GetColorName(_selectedColorIndex);
+            if (!string.IsNullOrEmpty(currentColorName))
+            {
+                EditorGUILayout.LabelField(currentColorName);
+            }
             var startingRect = GUILayoutUtility.GetLastRect();
+            
             if (PaletteDrawingHelper.DrawColorPalette(palette, ref _selectedColorIndex, true, _paletteTexture))
             {
                 Repaint();

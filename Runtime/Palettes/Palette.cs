@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditorInternal.VersionControl;
 using UnityEngine;
 
 namespace LiteNinja.Colors.Palettes
@@ -7,11 +8,15 @@ namespace LiteNinja.Colors.Palettes
     [Serializable]
     public class Palette : IPalette
     {
-        [SerializeField]
-        protected List<Color> _colors = new();
-        [NonSerialized]
-        private Texture2D _texture;
+        [SerializeField] protected List<Color> _colors = new();
+
+        [NonSerialized] private Texture2D _texture;
         private List<Action> _listeners = new();
+
+#if UNITY_EDITOR
+        [SerializeField] protected List<string> _colorNames = new();
+#endif
+
         public int Count => _colors.Count;
 
         public Color this[int index]
@@ -41,6 +46,13 @@ namespace LiteNinja.Colors.Palettes
         {
             _colors.Clear();
             _colors.AddRange(colors);
+#if UNITY_EDITOR
+            _colorNames.Clear();
+            foreach (var color in colors)
+            {
+                _colorNames.Add("");
+            }
+#endif
             Trigger();
         }
 
@@ -52,17 +64,33 @@ namespace LiteNinja.Colors.Palettes
         public void Add(Color color)
         {
             _colors.Add(color);
+#if UNITY_EDITOR
+            _colorNames.Add("");
+#endif
             Trigger();
         }
 
         public void AddRange(IEnumerable<Color> colors)
         {
             _colors.AddRange(colors);
+#if UNITY_EDITOR
+            foreach (var color in colors)
+            {
+                _colorNames.Add("");
+            }
+#endif
             Trigger();
         }
 
         public void Remove(Color color)
         {
+#if UNITY_EDITOR
+            var index = _colors.IndexOf(color);
+            if (index >= 0)
+            {
+                _colorNames.RemoveAt(index);
+            }
+#endif
             _colors.Remove(color);
             Trigger();
         }
@@ -70,12 +98,18 @@ namespace LiteNinja.Colors.Palettes
         public void RemoveAt(int index)
         {
             _colors.RemoveAt(index);
+#if UNITY_EDITOR
+            _colorNames.RemoveAt(index);
+#endif
             Trigger();
         }
 
         public void Clear()
         {
             _colors.Clear();
+#if UNITY_EDITOR
+            _colorNames.Clear();
+#endif
             Trigger();
         }
 
@@ -83,12 +117,25 @@ namespace LiteNinja.Colors.Palettes
         {
             _colors.Clear();
             _colors.AddRange(palette.GetAll());
+#if UNITY_EDITOR
+            _colorNames.Clear();
+            for (var i = 0; i < palette.Count; i++)
+            {
+                _colorNames.Add(palette.GetColorName(i));
+            }
+#endif
             Trigger();
         }
 
         public void AddFromPalette(IPalette palette)
         {
             _colors.AddRange(palette.GetAll());
+#if UNITY_EDITOR
+            for (var i = 0; i < palette.Count; i++)
+            {
+                _colorNames.Add(palette.GetColorName(i));
+            }
+#endif
             Trigger();
         }
 
@@ -104,6 +151,40 @@ namespace LiteNinja.Colors.Palettes
             _listeners.Remove(listener);
         }
 
+#if UNITY_EDITOR
+        public string GetColorName(int index)
+        {
+            NormalizeColorNames();
+            if (index < 0 || index >= _colorNames.Count)
+            {
+                return "";
+            }
+
+            return _colorNames[index];
+        }
+
+        public void SetColorName(int index, string name)
+        {
+            NormalizeColorNames();
+            if (index < 0 || index >= _colors.Count)
+            {
+                return;
+            }
+
+            _colorNames[index] = name;
+        }
+
+        private void NormalizeColorNames()
+        {
+            if (_colorNames.Count > _colors.Count) return;
+            //add an empty strings if the list is smaller than the colors until they are the same size
+            for (var i = _colorNames.Count; i < _colors.Count; i++)
+            {
+                _colorNames.Add("");
+            }
+        }
+
+#endif
         public Texture2D Texture
         {
             get
@@ -124,7 +205,9 @@ namespace LiteNinja.Colors.Palettes
                 };
                 _texture.SetPixels(_colors.ToArray());
                 _texture.Apply();
-            } else {
+            }
+            else
+            {
                 _texture = null;
             }
         }

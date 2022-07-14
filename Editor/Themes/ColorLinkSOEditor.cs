@@ -44,6 +44,11 @@ namespace LiteNinja.Colors.Editor.Themes
         {
             var colorIndex = colorLink.ColorIndex;
             EditorGUILayout.LabelField("Linked Color");
+            //draw color name, if it is not null or empty
+            if (!string.IsNullOrEmpty(colorLink.ColorName))
+            {
+                EditorGUILayout.LabelField(colorLink.ColorName);
+            }
             var lastRect = GUILayoutUtility.GetLastRect();
             if (PaletteDrawingHelper.DrawColorPalette(colorLink.Palette, ref colorIndex, false,
                     _paletteTexture, 10,
