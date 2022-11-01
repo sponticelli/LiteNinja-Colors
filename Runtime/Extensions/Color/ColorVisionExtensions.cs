@@ -9,7 +9,7 @@ namespace LiteNinja.Colors.Extensions
     {
         #region Matrices
         
-        // TODO Check color blindess matrixes
+        // TODO Check color blindness matrices
 
         /// <summary>
         /// normal vision.
@@ -174,7 +174,7 @@ namespace LiteNinja.Colors.Extensions
         }
 
         /// <summary>
-        /// Applys the Vision matrix to the colors.
+        /// Applies the Vision matrix to the colors.
         /// </summary>
         public static Color[] ColorVision(this Color[] self, ColorVisionType colorVision)
         {

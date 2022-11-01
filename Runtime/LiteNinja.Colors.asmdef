@@ -1,9 +1,8 @@
 {
-    "name": "com.liteninja.colors.Editor",
+    "name": "LiteNinja.Colors",
     "rootNamespace": "",
     "references": [
-        "GUID:5141ee2eaf1b24afa8e5c1528194b506",
-        "GUID:9a9ef198d65ed438b94bff7d160afb89"
+        "GUID:e912684ba94bb47fc82469b51e895307"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

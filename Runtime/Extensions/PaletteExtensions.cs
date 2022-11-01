@@ -8,9 +8,12 @@ namespace LiteNinja.Colors.Extensions
     {
         public static void SaveToTexture(this IPalette self, string fullSaveLocation)
         {
-            var texture = self.Texture;
-            var pngData = texture.EncodeToPNG();
-            File.WriteAllBytes(fullSaveLocation, pngData);
+#if UNITY_EDITOR
+          var texture = self.Texture;
+          var pngData = texture.EncodeToPNG();
+          File.WriteAllBytes(fullSaveLocation, pngData);         
+#endif
+            
         }
     }
 }

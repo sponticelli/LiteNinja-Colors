@@ -1,4 +1,4 @@
-using LiteNinja.Utils.Extensions;
+using LiteNinja.Common.Extensions;
 using UnityEngine;
 
 namespace LiteNinja.Colors.Extensions
